@@ -45,7 +45,7 @@ export default function Home() {
             marginBottom: "1.25rem",
           }}
         >
-          Plan, organize, and visualize your wedding day beautifully.
+          Plan, organize, and schedule your wedding so we can execute it beautifully.
         </h1>
 
         <p
@@ -86,7 +86,7 @@ export default function Home() {
             color: "#777",
           }}
         >
-          Built for couples who value calm, clarity, and timeless imagery.
+          Built for couples who value simplicity in planning timeless imagery.
         </p>
       </section>
 
@@ -107,7 +107,7 @@ export default function Home() {
             marginBottom: "2.5rem",
           }}
         >
-          A calm, organized home for your wedding photography vision board.
+          An organized home for your wedding photography vision board.
         </h2>
 
         <div
@@ -120,19 +120,19 @@ export default function Home() {
           {[
             {
               title: "Plan",
-              text: "Collect must-have images, family details, and inspiration uploads from your couple in one place.",
+              text: "Collect must-have images, family details, and inspiration uploads in one place.",
             },
             {
               title: "Organize",
-              text: "Build smart family shot lists, note special considerations, and keep photographer-only notes separate.",
+              text: "Build smart family shot lists, note special considerations, and "photographer-only" important notes .",
             },
             {
               title: "Schedule",
-              text: "Design a photography-first timeline so you always know where to be and who should be in front of your lens.",
+              text: "Design a photography-first timeline so your photo team knows where to be and who should be in front of our lens.",
             },
             {
               title: "Execute",
-              text: "Use day-of checklists on your phone – tap to mark shots complete and focus on creating, not remembering.",
+              text: "Shareable day-of checklists for my phone – I can tap to mark shots complete so I can focus on creating, not remembering.",
             },
           ].map((item) => (
             <div
@@ -199,7 +199,7 @@ export default function Home() {
                 marginBottom: "1rem",
               }}
             >
-              Built so your wedding day feels calm, intentional, and fully seen.
+              Built so your wedding day feels calm, intentional, and fully seen.  I want you to enjoy your day without it feeling like a photo shoot.
             </h2>
             <p
               style={{
