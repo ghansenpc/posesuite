@@ -9,6 +9,12 @@ type GroupOption = {
   label: string;
 };
 
+type CustomGroup = {
+  id: string;
+  label: string;
+  included: boolean;
+};
+
 function getPartnerGroups(
   status: Relationship,
   primaryName: string,
@@ -21,22 +27,10 @@ function getPartnerGroups(
   if (status === "together") {
     // Partner parents happily together – Group A
     return [
-      {
-        id: `${sidePrefix}-mom`,
-        label: `${p} with mom`,
-      },
-      {
-        id: `${sidePrefix}-dad`,
-        label: `${p} with dad`,
-      },
-      {
-        id: `${sidePrefix}-parents-together`,
-        label: `${p} with mom and dad together`,
-      },
-      {
-        id: `${sidePrefix}-couple-with-parents`,
-        label: `${p} & ${o} with ${p}'s parents`,
-      },
+      { id: `${sidePrefix}-mom`, label: `${p} with mom` },
+      { id: `${sidePrefix}-dad`, label: `${p} with dad` },
+      { id: `${sidePrefix}-parents-together`, label: `${p} with mom and dad together` },
+      { id: `${sidePrefix}-couple-with-parents`, label: `${p} & ${o} with ${p}'s parents` },
       {
         id: `${sidePrefix}-couple-with-parents-siblings`,
         label: `${p} & ${o} with ${p}'s parents and siblings`,
@@ -49,44 +43,20 @@ function getPartnerGroups(
         id: `${sidePrefix}-couple-with-grandparents`,
         label: `${p} & ${o} with ${p}'s grandparents`,
       },
-      {
-        id: `${sidePrefix}-with-grandmother`,
-        label: `${p} with grandmother`,
-      },
-      {
-        id: `${sidePrefix}-with-grandfather`,
-        label: `${p} with grandfather`,
-      },
-      {
-        id: `${sidePrefix}-with-grandparents`,
-        label: `${p} with grandparents`,
-      },
-      {
-        id: `${sidePrefix}-with-siblings`,
-        label: `${p} with siblings`,
-      },
+      { id: `${sidePrefix}-with-grandmother`, label: `${p} with grandmother` },
+      { id: `${sidePrefix}-with-grandfather`, label: `${p} with grandfather` },
+      { id: `${sidePrefix}-with-grandparents`, label: `${p} with grandparents` },
+      { id: `${sidePrefix}-with-siblings`, label: `${p} with siblings` },
     ];
   }
 
   if (status === "separatedAmicable") {
     // Partner parents separated but comfortable together – Group B
     return [
-      {
-        id: `${sidePrefix}-mom`,
-        label: `${p} with mom`,
-      },
-      {
-        id: `${sidePrefix}-dad`,
-        label: `${p} with dad`,
-      },
-      {
-        id: `${sidePrefix}-parents-together`,
-        label: `${p} with mom and dad together`,
-      },
-      {
-        id: `${sidePrefix}-couple-with-parents`,
-        label: `${p} & ${o} with ${p}'s parents`,
-      },
+      { id: `${sidePrefix}-mom`, label: `${p} with mom` },
+      { id: `${sidePrefix}-dad`, label: `${p} with dad` },
+      { id: `${sidePrefix}-parents-together`, label: `${p} with mom and dad together` },
+      { id: `${sidePrefix}-couple-with-parents`, label: `${p} & ${o} with ${p}'s parents` },
       {
         id: `${sidePrefix}-couple-with-parents-siblings`,
         label: `${p} & ${o} with ${p}'s parents and siblings`,
@@ -119,32 +89,17 @@ function getPartnerGroups(
         id: `${sidePrefix}-couple-with-grandparents`,
         label: `${p} & ${o} with ${p}'s grandparents`,
       },
-      {
-        id: `${sidePrefix}-with-grandmother`,
-        label: `${p} with grandmother`,
-      },
-      {
-        id: `${sidePrefix}-with-grandfather`,
-        label: `${p} with grandfather`,
-      },
-      {
-        id: `${sidePrefix}-with-grandparents`,
-        label: `${p} with grandparents`,
-      },
+      { id: `${sidePrefix}-with-grandmother`, label: `${p} with grandmother` },
+      { id: `${sidePrefix}-with-grandfather`, label: `${p} with grandfather` },
+      { id: `${sidePrefix}-with-grandparents`, label: `${p} with grandparents` },
     ];
   }
 
   // status === "separatedSeparate"
   // Partner parents separated – prefer separate photos – Group C
   return [
-    {
-      id: `${sidePrefix}-mom`,
-      label: `${p} with mom`,
-    },
-    {
-      id: `${sidePrefix}-dad`,
-      label: `${p} with dad`,
-    },
+    { id: `${sidePrefix}-mom`, label: `${p} with mom` },
+    { id: `${sidePrefix}-dad`, label: `${p} with dad` },
     {
       id: `${sidePrefix}-couple-mom-partner`,
       label: `${p} & ${o} with mom and her partner (if applicable)`,
@@ -173,26 +128,14 @@ function getPartnerGroups(
       id: `${sidePrefix}-couple-with-siblings`,
       label: `${p} & ${o} with siblings`,
     },
-    {
-      id: `${sidePrefix}-with-siblings`,
-      label: `${p} with siblings`,
-    },
+    { id: `${sidePrefix}-with-siblings`, label: `${p} with siblings` },
     {
       id: `${sidePrefix}-couple-with-grandparents`,
       label: `${p} & ${o} with ${p}'s grandparents`,
     },
-    {
-      id: `${sidePrefix}-with-grandmother`,
-      label: `${p} with grandmother`,
-    },
-    {
-      id: `${sidePrefix}-with-grandfather`,
-      label: `${p} with grandfather`,
-    },
-    {
-      id: `${sidePrefix}-with-grandparents`,
-      label: `${p} with grandparents`,
-    },
+    { id: `${sidePrefix}-with-grandmother`, label: `${p} with grandmother` },
+    { id: `${sidePrefix}-with-grandfather`, label: `${p} with grandfather` },
+    { id: `${sidePrefix}-with-grandparents`, label: `${p} with grandparents` },
   ];
 }
 
@@ -230,23 +173,51 @@ export default function FamilyPage() {
   const [p2Selected, setP2Selected] = useState<string[]>([]);
   const [bothSelected, setBothSelected] = useState<string[]>([]);
 
+  const [customGroups, setCustomGroups] = useState<CustomGroup[]>([]);
+
+  // Load basics + any previously saved family data
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const stored = window.localStorage.getItem("posesuiteBasics");
-      if (stored) {
-        const data = JSON.parse(stored);
-        if (data.partner1Name && typeof data.partner1Name === "string") {
-          setPartner1Name(data.partner1Name);
+      const basicsRaw = window.localStorage.getItem("posesuiteBasics");
+      if (basicsRaw) {
+        const basics = JSON.parse(basicsRaw);
+        if (basics.partner1Name && typeof basics.partner1Name === "string") {
+          setPartner1Name(basics.partner1Name);
         }
-        if (data.partner2Name && typeof data.partner2Name === "string") {
-          setPartner2Name(data.partner2Name);
+        if (basics.partner2Name && typeof basics.partner2Name === "string") {
+          setPartner2Name(basics.partner2Name);
         }
       }
+
+      const famRaw = window.localStorage.getItem("posesuiteFamily");
+      if (famRaw) {
+        const fam = JSON.parse(famRaw);
+        if (fam.p1Status) setP1Status(fam.p1Status);
+        if (fam.p2Status) setP2Status(fam.p2Status);
+        if (Array.isArray(fam.p1Selected)) setP1Selected(fam.p1Selected);
+        if (Array.isArray(fam.p2Selected)) setP2Selected(fam.p2Selected);
+        if (Array.isArray(fam.bothSelected)) setBothSelected(fam.bothSelected);
+        if (Array.isArray(fam.customGroups)) setCustomGroups(fam.customGroups);
+      }
     } catch {
-      // ignore
+      // ignore errors
     }
   }, []);
+
+  // Save family selections so the day-of page can read them
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const payload = {
+      p1Status,
+      p2Status,
+      p1Selected,
+      p2Selected,
+      bothSelected,
+      customGroups,
+    };
+    window.localStorage.setItem("posesuiteFamily", JSON.stringify(payload));
+  }, [p1Status, p2Status, p1Selected, p2Selected, bothSelected, customGroups]);
 
   const toggleP1 = (id: string) => {
     setP1Selected((prev) =>
@@ -264,6 +235,30 @@ export default function FamilyPage() {
     setBothSelected((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
+  };
+
+  const toggleCustom = (id: string) => {
+    setCustomGroups((prev) =>
+      prev.map((g) =>
+        g.id === id ? { ...g, included: !g.included } : g
+      )
+    );
+  };
+
+  const handleCustomLabelChange = (id: string, value: string) => {
+    setCustomGroups((prev) =>
+      prev.map((g) =>
+        g.id === id ? { ...g, label: value } : g
+      )
+    );
+  };
+
+  const handleAddCustomGroup = () => {
+    const newId = `custom-${Date.now()}`;
+    setCustomGroups((prev) => [
+      ...prev,
+      { id: newId, label: "", included: false },
+    ]);
   };
 
   const p1Groups = getPartnerGroups(
@@ -348,9 +343,9 @@ export default function FamilyPage() {
               }}
             >
               During formal portrait time we&apos;ll focus on your closest
-              family so everything feels calm and efficient. We&apos;ll have the
-              whole reception for extended family photos at dinner and on the
-              dance floor.
+              family so everything stays organized and efficient. We&apos;ll
+              have the whole reception for extended family photos at dinner and
+              on the dance floor.
             </p>
           </div>
 
@@ -391,7 +386,7 @@ export default function FamilyPage() {
           >
             Choose the option that best reflects {partner1Name || "Partner 1"}
             &apos;s parents, then check the groupings you&apos;d like during
-            formal portrait time.
+            the formal portrait window.
           </p>
 
           {/* Relationship selector */}
@@ -605,7 +600,7 @@ export default function FamilyPage() {
         </section>
 
         {/* Both families together */}
-        <section style={{ marginBottom: "1.75rem" }}>
+        <section style={{ marginBottom: "2rem" }}>
           <h2
             style={{
               fontSize: "1.05rem",
@@ -622,7 +617,7 @@ export default function FamilyPage() {
               marginBottom: "1rem",
             }}
           >
-            These are the bigger &quot;everyone together&quot; photos with both
+            These are the &quot;everyone together&quot; photos with both
             families — often right after we finish each side individually.
           </p>
 
@@ -654,6 +649,84 @@ export default function FamilyPage() {
           </div>
         </section>
 
+        {/* Additional family groupings */}
+        <section style={{ marginBottom: "1.75rem" }}>
+          <h2
+            style={{
+              fontSize: "1.05rem",
+              fontWeight: 600,
+              marginBottom: "0.5rem",
+            }}
+          >
+            Additional family groupings
+          </h2>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              color: "#666",
+              marginBottom: "1rem",
+            }}
+          >
+            Use this space for family photos that aren&apos;t listed above but
+            still matter to you — godparents, cousins, chosen family, or anyone
+            who has played a parent-figure role in your life.
+          </p>
+
+          <div style={{ display: "grid", gap: "0.7rem", marginBottom: "1rem" }}>
+            {customGroups.map((group) => (
+              <div
+                key={group.id}
+                style={{
+                  borderRadius: "0.9rem",
+                  border: "1px solid #E2E2DD",
+                  padding: "0.6rem 0.75rem",
+                  backgroundColor: "#FCFCF9",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.6rem",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={group.included}
+                  onChange={() => toggleCustom(group.id)}
+                  style={{ accentColor: "#A3B18A" }}
+                />
+                <input
+                  type="text"
+                  value={group.label}
+                  onChange={(e) =>
+                    handleCustomLabelChange(group.id, e.target.value)
+                  }
+                  placeholder="Describe this group (for example: Bride with godparents, all of bride's cousins, groom with grandparents & aunt)"
+                  style={{
+                    flex: 1,
+                    border: "none",
+                    background: "transparent",
+                    fontSize: "0.9rem",
+                    outline: "none",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={handleAddCustomGroup}
+            style={{
+              borderRadius: "999px",
+              border: "1px solid #C9A66B",
+              backgroundColor: "#FFFDF8",
+              padding: "0.7rem 1.6rem",
+              fontSize: "0.9rem",
+              cursor: "pointer",
+            }}
+          >
+            + Add another family group
+          </button>
+        </section>
+
         {/* Gentle reminder about extended family */}
         <section>
           <p
@@ -669,7 +742,7 @@ export default function FamilyPage() {
             We&apos;ll absolutely make time for extended family photos — often
             during dinner or on the dance floor when everyone is more relaxed.
             This checklist is just for the core, must-have groupings during the
-            formal portrait block so things stay smooth and stress-free.
+            formal portrait block so things move smoothly and on time.
           </p>
         </section>
 
@@ -726,7 +799,7 @@ export default function FamilyPage() {
         }}
       >
         Later, these selections can flow into your day-of PoseSuite checklist so
-        we can move through family photos in a calm, efficient order.
+        we can move through family photos in a clear, efficient order.
       </p>
     </main>
   );
