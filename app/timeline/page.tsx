@@ -10,48 +10,62 @@ type TimelineItem = {
   included: boolean;
 };
 
-const initialItems: TimelineItem[] = [
+const defaultItems: TimelineItem[] = [
   {
-    id: "photographer-arrival",
+    id: "hair-makeup",
+    label: "Hair & makeup",
+    time: "",
+    notes: "When you expect to be mostly ready for photos.",
+    included: true,
+  },
+  {
+    id: "photographer-start",
     label: "Photographer arrival",
     time: "",
     notes: "",
     included: true,
   },
   {
+    id: "videographer-start",
+    label: "Videographer arrival",
+    time: "",
+    notes: "",
+    included: false,
+  },
+  {
     id: "bride-prep",
-    label: "Bride / Partner 1 getting ready",
+    label: "Bride / Partner 1 getting ready photos",
     time: "",
     notes: "",
     included: true,
   },
   {
     id: "groom-prep",
-    label: "Groom / Partner 2 getting ready",
+    label: "Groom / Partner 2 getting ready photos",
     time: "",
     notes: "",
     included: true,
   },
   {
-    id: "first-look",
-    label: "First look",
+    id: "bridesmaids-first-look",
+    label: "Bridesmaids / wedding party first look",
     time: "",
     notes: "",
-    included: true,
+    included: false,
   },
   {
-    id: "wedding-party",
-    label: "Wedding party portraits",
+    id: "parent-first-look",
+    label: "Parent first look",
+    time: "",
+    notes: "For example: bride & dad first look.",
+    included: false,
+  },
+  {
+    id: "couple-first-look",
+    label: "Couple first look",
     time: "",
     notes: "",
-    included: true,
-  },
-  {
-    id: "family-formals",
-    label: "Family formals",
-    time: "",
-    notes: "Plan for both sides + any special groupings.",
-    included: true,
+    included: false,
   },
   {
     id: "ceremony",
@@ -68,62 +82,118 @@ const initialItems: TimelineItem[] = [
     included: true,
   },
   {
-    id: "reception-entrance",
-    label: "Reception entrances & speeches",
+    id: "family-portraits",
+    label: "Family portraits",
+    time: "",
+    notes: "Usually right after the ceremony or during cocktail hour.",
+    included: true,
+  },
+  {
+    id: "wedding-party-portraits",
+    label: "Wedding party portraits",
     time: "",
     notes: "",
     included: true,
   },
   {
-    id: "first-dances",
-    label: "First dances",
+    id: "couple-portraits",
+    label: "Couple portraits",
+    time: "",
+    notes: "Often during golden hour or a quiet moment.",
+    included: true,
+  },
+  {
+    id: "reception-entrance",
+    label: "Reception entrance & intros",
+    time: "",
+    notes: "",
+    included: true,
+  },
+  {
+    id: "first-dance",
+    label: "First dance",
+    time: "",
+    notes: "",
+    included: true,
+  },
+  {
+    id: "parent-dances",
+    label: "Parent dances",
+    time: "",
+    notes: "",
+    included: false,
+  },
+  {
+    id: "toasts",
+    label: "Toasts / speeches",
     time: "",
     notes: "",
     included: true,
   },
   {
     id: "cake-cutting",
-    label: "Cake cutting / dessert",
+    label: "Cake cutting / dessert moment",
+    time: "",
+    notes: "",
+    included: false,
+  },
+  {
+    id: "dance-floor",
+    label: "Open dance floor coverage",
     time: "",
     notes: "",
     included: true,
   },
   {
-    id: "exit",
-    label: "Exit / final photos",
+    id: "private-last-dance",
+    label: "Private last dance",
     time: "",
     notes: "",
-    included: true,
+    included: false,
+  },
+  {
+    id: "exit",
+    label: "Exit / send-off photos",
+    time: "",
+    notes: "",
+    included: false,
   },
 ];
 
 export default function TimelinePage() {
-  const [items, setItems] = useState<TimelineItem[]>(initialItems);
+  const [items, setItems] = useState<TimelineItem[]>(defaultItems);
+  const [customItems, setCustomItems] = useState<TimelineItem[]>([]);
 
   const handleChange = (
     id: string,
+    source: "default" | "custom",
     field: "time" | "notes" | "label" | "included",
     value: string | boolean
   ) => {
-    setItems((prev) =>
-      prev.map((item) =>
+    const updater = (list: TimelineItem[]) =>
+      list.map((item) =>
         item.id === id
           ? {
               ...item,
               [field]: value,
             }
           : item
-      )
-    );
+      );
+
+    if (source === "default") {
+      setItems((prev) => updater(prev));
+    } else {
+      setCustomItems((prev) => updater(prev));
+    }
   };
 
   const handleAddCustom = () => {
     const newId = `custom-${Date.now()}`;
-    setItems((prev) => [
+    setCustomItems((prev) => [
       ...prev,
       {
         id: newId,
-        label: "Custom timeline item",
+        label: "Additional moment",
         time: "",
         notes: "",
         included: true,
@@ -131,8 +201,12 @@ export default function TimelinePage() {
     ]);
   };
 
-  const includedItems = items.filter((item) => item.included);
-  const excludedItems = items.filter((item) => !item.included);
+  const handleRemoveCustom = (id: string) => {
+    setCustomItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const includedDefaults = items.filter((i) => i.included);
+  const notIncludedDefaults = items.filter((i) => !i.included);
 
   return (
     <main
@@ -181,7 +255,7 @@ export default function TimelinePage() {
                 marginBottom: "1.25rem",
               }}
             >
-              PoseSuite · Timeline builder
+              PoseSuite · Wedding day timeline
             </div>
             <h1
               style={{
@@ -195,15 +269,15 @@ export default function TimelinePage() {
             </h1>
             <p
               style={{
-                maxWidth: "520px",
+                maxWidth: "540px",
                 fontSize: "0.98rem",
                 color: "#555",
                 margin: 0,
               }}
             >
-              Start with the major beats of your day – then we&apos;ll connect
-              this to your shot lists, so each block can reveal the photos to
-              capture when you tap into it on your day-of plan.
+              We&apos;ll start with the most common moments we see at weddings.
+              Keep what fits your day, add times if you know them, and use the
+              notes to share anything you want me to be aware of.
             </p>
           </div>
           <a
@@ -219,128 +293,172 @@ export default function TimelinePage() {
               marginTop: "0.5rem",
             }}
           >
-            View day-of mock →
+            Preview day-of view →
           </a>
         </div>
 
-        {/* Timeline form */}
-        <div style={{ display: "grid", gap: "1.5rem" }}>
-          {includedItems.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                borderRadius: "1rem",
-                border: "1px solid #E2E2DD",
-                padding: "0.85rem 0.9rem 1rem",
-                backgroundColor: "#FCFCF9",
-              }}
-            >
+        {/* Core moments */}
+        <section style={{ marginBottom: "2rem" }}>
+          <h2
+            style={{
+              fontSize: "1.05rem",
+              fontWeight: 600,
+              marginBottom: "0.75rem",
+            }}
+          >
+            Core moments
+          </h2>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              color: "#666",
+              marginBottom: "1rem",
+            }}
+          >
+            Check the moments that are part of your day, and add an approximate
+            time if you have one. It&apos;s okay if you don&apos;t know
+            everything yet.
+          </p>
+
+          <div style={{ display: "grid", gap: "0.9rem" }}>
+            {includedDefaults.map((item) => (
               <div
+                key={item.id}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.6rem",
-                  marginBottom: "0.5rem",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
+                  borderRadius: "1rem",
+                  border: "1px solid #E2E2DD",
+                  padding: "0.75rem 0.9rem 0.9rem",
+                  backgroundColor: "#FCFCF9",
                 }}
               >
-                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                  <input
-                    type="checkbox"
-                    checked={item.included}
-                    onChange={(e) =>
-                      handleChange(item.id, "included", e.target.checked)
-                    }
-                  />
-                  <input
-                    type="text"
-                    value={item.label}
-                    onChange={(e) =>
-                      handleChange(item.id, "label", e.target.value)
-                    }
-                    style={{
-                      border: "none",
-                      background: "transparent",
-                      fontSize: "0.98rem",
-                      fontWeight: 600,
-                      outline: "none",
-                      minWidth: "220px",
-                    }}
-                  />
-                </div>
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.4rem",
-                    fontSize: "0.85rem",
+                    justifyContent: "space-between",
+                    gap: "0.75rem",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <span style={{ color: "#777" }}>Approx. time</span>
-                  <input
-                    type="time"
-                    value={item.time}
-                    onChange={(e) =>
-                      handleChange(item.id, "time", e.target.value)
-                    }
-                    style={{
-                      borderRadius: "999px",
-                      border: "1px solid #D4D4CF",
-                      padding: "0.3rem 0.6rem",
-                      fontSize: "0.85rem",
-                    }}
-                  />
-                </div>
-              </div>
-              <textarea
-                placeholder="Notes about this block (locations, people involved, lighting notes, travel, etc.)"
-                value={item.notes}
-                onChange={(e) =>
-                  handleChange(item.id, "notes", e.target.value)
-                }
-                rows={2}
-                style={{
-                  width: "100%",
-                  borderRadius: "0.8rem",
-                  border: "1px solid #E2E2DD",
-                  padding: "0.5rem 0.7rem",
-                  fontSize: "0.88rem",
-                  resize: "vertical",
-                  outline: "none",
-                  backgroundColor: "#FFFFFF",
-                }}
-              />
-            </div>
-          ))}
-
-          {/* Excluded / unneeded items */}
-          {excludedItems.length > 0 && (
-            <details
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "0.85rem",
-                color: "#666",
-              }}
-            >
-              <summary style={{ cursor: "pointer" }}>
-                Items you&apos;ve turned off ({excludedItems.length})
-              </summary>
-              <div style={{ marginTop: "0.6rem", display: "grid", gap: "0.4rem" }}>
-                {excludedItems.map((item) => (
                   <label
-                    key={item.id}
                     style={{
                       display: "flex",
                       alignItems: "center",
                       gap: "0.5rem",
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
                     }}
                   >
                     <input
                       type="checkbox"
                       checked={item.included}
                       onChange={(e) =>
-                        handleChange(item.id, "included", e.target.checked)
+                        handleChange(
+                          item.id,
+                          "default",
+                          "included",
+                          e.target.checked
+                        )
+                      }
+                    />
+                    <span>{item.label}</span>
+                  </label>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    <span style={{ color: "#777" }}>Approx. time</span>
+                    <input
+                      type="time"
+                      value={item.time}
+                      onChange={(e) =>
+                        handleChange(
+                          item.id,
+                          "default",
+                          "time",
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        borderRadius: "999px",
+                        border: "1px solid #D4D4CF",
+                        padding: "0.3rem 0.6rem",
+                        fontSize: "0.85rem",
+                        backgroundColor: "#FFFFFF",
+                      }}
+                    />
+                  </div>
+                </div>
+                <textarea
+                  placeholder="Notes about this moment (who's involved, location, anything special you want me to know)."
+                  value={item.notes}
+                  onChange={(e) =>
+                    handleChange(
+                      item.id,
+                      "default",
+                      "notes",
+                      e.target.value
+                    )
+                  }
+                  rows={item.notes ? 2 : 1}
+                  style={{
+                    width: "100%",
+                    marginTop: "0.45rem",
+                    borderRadius: "0.8rem",
+                    border: "1px solid #E2E2DD",
+                    padding: "0.45rem 0.65rem",
+                    fontSize: "0.88rem",
+                    resize: "vertical",
+                    outline: "none",
+                    backgroundColor: "#FFFFFF",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {notIncludedDefaults.length > 0 && (
+            <details
+              style={{
+                marginTop: "1rem",
+                fontSize: "0.85rem",
+                color: "#666",
+              }}
+            >
+              <summary style={{ cursor: "pointer" }}>
+                Moments you&apos;ve turned off ({notIncludedDefaults.length})
+              </summary>
+              <div
+                style={{
+                  marginTop: "0.6rem",
+                  display: "grid",
+                  gap: "0.5rem",
+                }}
+              >
+                {notIncludedDefaults.map((item) => (
+                  <label
+                    key={item.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={item.included}
+                      onChange={(e) =>
+                        handleChange(
+                          item.id,
+                          "default",
+                          "included",
+                          e.target.checked
+                        )
                       }
                     />
                     <span>{item.label}</span>
@@ -349,19 +467,145 @@ export default function TimelinePage() {
               </div>
             </details>
           )}
-        </div>
+        </section>
 
-        {/* Bottom controls */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "2rem",
-            gap: "1rem",
-            flexWrap: "wrap",
-          }}
-        >
+        {/* Additional moments */}
+        <section>
+          <h2
+            style={{
+              fontSize: "1.05rem",
+              fontWeight: 600,
+              marginBottom: "0.75rem",
+            }}
+          >
+            Additional moments
+          </h2>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              color: "#666",
+              marginBottom: "1rem",
+            }}
+          >
+            Use this space for anything unique to your day – special
+            performances, cultural traditions, outfit changes, private vows, or
+            anything else we should plan for.
+          </p>
+
+          <div style={{ display: "grid", gap: "0.9rem", marginBottom: "1rem" }}>
+            {customItems.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  borderRadius: "1rem",
+                  border: "1px solid #E2E2DD",
+                  padding: "0.75rem 0.9rem 0.9rem",
+                  backgroundColor: "#FCFCF9",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "0.75rem",
+                    flexWrap: "wrap",
+                    marginBottom: "0.4rem",
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={item.label}
+                    onChange={(e) =>
+                      handleChange(
+                        item.id,
+                        "custom",
+                        "label",
+                        e.target.value
+                      )
+                    }
+                    placeholder="Describe this moment"
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
+                      outline: "none",
+                      minWidth: "220px",
+                    }}
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    <span style={{ color: "#777" }}>Approx. time</span>
+                    <input
+                      type="time"
+                      value={item.time}
+                      onChange={(e) =>
+                        handleChange(
+                          item.id,
+                          "custom",
+                          "time",
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        borderRadius: "999px",
+                        border: "1px solid #D4D4CF",
+                        padding: "0.3rem 0.6rem",
+                        fontSize: "0.85rem",
+                        backgroundColor: "#FFFFFF",
+                      }}
+                    />
+                  </div>
+                </div>
+                <textarea
+                  placeholder="Notes about this moment."
+                  value={item.notes}
+                  onChange={(e) =>
+                    handleChange(
+                      item.id,
+                      "custom",
+                      "notes",
+                      e.target.value
+                    )
+                  }
+                  rows={item.notes ? 2 : 1}
+                  style={{
+                    width: "100%",
+                    borderRadius: "0.8rem",
+                    border: "1px solid #E2E2DD",
+                    padding: "0.45rem 0.65rem",
+                    fontSize: "0.88rem",
+                    resize: "vertical",
+                    outline: "none",
+                    backgroundColor: "#FFFFFF",
+                    marginBottom: "0.4rem",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveCustom(item.id)}
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    color: "#999",
+                    fontSize: "0.8rem",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+
           <button
             type="button"
             onClick={handleAddCustom}
@@ -374,40 +618,51 @@ export default function TimelinePage() {
               cursor: "pointer",
             }}
           >
-            + Add custom timeline block
+            + Add another moment
           </button>
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-            <button
-              type="button"
-              style={{
-                borderRadius: "999px",
-                border: "1px solid #D4D4CF",
-                backgroundColor: "#FFFFFF",
-                padding: "0.7rem 1.8rem",
-                fontSize: "0.9rem",
-                cursor: "pointer",
-              }}
-            >
-              Save for later (coming soon)
-            </button>
-            <button
-              type="button"
-              style={{
-                borderRadius: "999px",
-                border: "none",
-                backgroundColor: "#A3B18A",
-                color: "#1F2622",
-                padding: "0.85rem 2.4rem",
-                fontSize: "0.95rem",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                fontWeight: 500,
-              }}
-            >
-              Continue to shot lists (future step)
-            </button>
-          </div>
+        </section>
+
+        {/* Bottom controls */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            marginTop: "2rem",
+            gap: "0.75rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <button
+            type="button"
+            style={{
+              borderRadius: "999px",
+              border: "1px solid #D4D4CF",
+              backgroundColor: "#FFFFFF",
+              padding: "0.7rem 1.8rem",
+              fontSize: "0.9rem",
+              cursor: "pointer",
+            }}
+          >
+            Save for later (coming soon)
+          </button>
+          <button
+            type="button"
+            style={{
+              borderRadius: "999px",
+              border: "none",
+              backgroundColor: "#A3B18A",
+              color: "#1F2622",
+              padding: "0.85rem 2.4rem",
+              fontSize: "0.95rem",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              fontWeight: 500,
+            }}
+          >
+            This looks good (for now)
+          </button>
         </div>
       </section>
 
@@ -419,9 +674,8 @@ export default function TimelinePage() {
           marginTop: "1rem",
         }}
       >
-        In a later version, this timeline will connect directly to your day-of
-        plan, so tapping a block (like bride prep) reveals the matching shot
-        list.
+        Later, each moment here will connect to its own shot list inside your
+        PoseSuite day-of plan.
       </p>
     </main>
   );
