@@ -1,179 +1,161 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-type TimelineItem = {
+type TimelineItemState = {
+  id: string;
+  included: boolean;
+};
+
+// Order of items, logic for labels will use these IDs
+const itemOrder: string[] = [
+  "partner1-prep",
+  "partner2-prep",
+  "partner1-bridesmaids-first-look",
+  "partner1-father-first-look",
+  "couple-first-look",
+  "couple-first-touch",
+  "private-vows",
+  "ceremony",
+  "family-portraits",
+  "couple-portraits",
+  "wedding-party-portraits",
+  "church-exit",
+  "church-portrait-session",
+  "extended-family-photos",
+  "additional-location-portraits",
+  "cocktail-hour",
+  "grand-entrance",
+  "welcome-speech",
+  "welcome-blessing",
+  "cake-cutting",
+  "first-dance",
+  "mother-son-dance",
+  "father-daughter-dance",
+  "table-race",
+  "best-man-speech",
+  "maid-of-honor-speech",
+  "bouquet-toss",
+  "garter-toss",
+  "sparkler-exit",
+];
+
+function buildLabel(
+  id: string,
+  partner1Name: string,
+  partner2Name: string
+): string {
+  switch (id) {
+    case "partner1-prep":
+      return `${partner1Name} getting ready photos`;
+    case "partner2-prep":
+      return `${partner2Name} getting ready photos`;
+    case "partner1-bridesmaids-first-look":
+      return `${partner1Name} first look with wedding party / bridesmaids`;
+    case "partner1-father-first-look":
+      return `${partner1Name} first look with father`;
+    case "couple-first-look":
+      return `${partner1Name} & ${partner2Name} first look`;
+    case "couple-first-touch":
+      return `${partner1Name} & ${partner2Name} first touch`;
+    case "private-vows":
+      return "Private vows";
+    case "ceremony":
+      return "Ceremony";
+    case "family-portraits":
+      return "Family portraits";
+    case "couple-portraits":
+      return `${partner1Name} & ${partner2Name} portraits`;
+    case "wedding-party-portraits":
+      return "Wedding party portraits";
+    case "church-exit":
+      return "Church exit";
+    case "church-portrait-session":
+      return "Church portrait session";
+    case "extended-family-photos":
+      return "Extended family photos";
+    case "additional-location-portraits":
+      return "Additional location portraits";
+    case "cocktail-hour":
+      return "Cocktail hour";
+    case "grand-entrance":
+      return "Grand entrance";
+    case "welcome-speech":
+      return "Welcome speech";
+    case "welcome-blessing":
+      return "Welcome blessing";
+    case "cake-cutting":
+      return "Cake cutting";
+    case "first-dance":
+      return "First dance";
+    case "mother-son-dance":
+      return "Mother–son dance";
+    case "father-daughter-dance":
+      return "Father–daughter dance";
+    case "table-race":
+      return "Table race / table photos";
+    case "best-man-speech":
+      return "Best man speech";
+    case "maid-of-honor-speech":
+      return "Maid of honor speech";
+    case "bouquet-toss":
+      return "Bouquet toss";
+    case "garter-toss":
+      return "Garter toss";
+    case "sparkler-exit":
+      return "Sparkler exit";
+    default:
+      return id;
+  }
+}
+
+type CustomItem = {
   id: string;
   label: string;
   included: boolean;
 };
 
-// In a future version, these will come from the Basics page:
-const partner1NamePlaceholder = "Partner 1";
-const partner2NamePlaceholder = "Partner 2";
-
-const defaultItems: TimelineItem[] = [
-  {
-    id: "partner1-prep",
-    label: `${partner1NamePlaceholder} getting ready photos`,
-    included: false,
-  },
-  {
-    id: "partner2-prep",
-    label: `${partner2NamePlaceholder} getting ready photos`,
-    included: false,
-  },
-  {
-    id: "partner1-bridesmaids-first-look",
-    label: `${partner1NamePlaceholder} first look with wedding party / bridesmaids`,
-    included: false,
-  },
-  {
-    id: "partner1-father-first-look",
-    label: `${partner1NamePlaceholder} first look with father`,
-    included: false,
-  },
-  {
-    id: "couple-first-look",
-    label: `${partner1NamePlaceholder} & ${partner2NamePlaceholder} first look`,
-    included: false,
-  },
-  {
-    id: "couple-first-touch",
-    label: `${partner1NamePlaceholder} & ${partner2NamePlaceholder} first touch`,
-    included: false,
-  },
-  {
-    id: "private-vows",
-    label: "Private vows",
-    included: false,
-  },
-  {
-    id: "ceremony",
-    label: "Ceremony",
-    included: false,
-  },
-  {
-    id: "family-portraits",
-    label: "Family portraits",
-    included: false,
-  },
-  {
-    id: "couple-portraits",
-    label: `${partner1NamePlaceholder} & ${partner2NamePlaceholder} portraits`,
-    included: false,
-  },
-  {
-    id: "wedding-party-portraits",
-    label: "Wedding party portraits",
-    included: false,
-  },
-  {
-    id: "church-exit",
-    label: "Church exit",
-    included: false,
-  },
-  {
-    id: "church-portrait-session",
-    label: "Church portrait session",
-    included: false,
-  },
-  {
-    id: "extended-family-photos",
-    label: "Extended family photos",
-    included: false,
-  },
-  {
-    id: "additional-location-portraits",
-    label: "Additional location portraits",
-    included: false,
-  },
-  {
-    id: "cocktail-hour",
-    label: "Cocktail hour",
-    included: false,
-  },
-  {
-    id: "grand-entrance",
-    label: "Grand entrance",
-    included: false,
-  },
-  {
-    id: "welcome-speech",
-    label: "Welcome speech",
-    included: false,
-  },
-  {
-    id: "welcome-blessing",
-    label: "Welcome blessing",
-    included: false,
-  },
-  {
-    id: "cake-cutting",
-    label: "Cake cutting",
-    included: false,
-  },
-  {
-    id: "first-dance",
-    label: "First dance",
-    included: false,
-  },
-  {
-    id: "mother-son-dance",
-    label: "Mother–son dance",
-    included: false,
-  },
-  {
-    id: "father-daughter-dance",
-    label: "Father–daughter dance",
-    included: false,
-  },
-  {
-    id: "table-race",
-    label: "Table race / table photos",
-    included: false,
-  },
-  {
-    id: "best-man-speech",
-    label: "Best man speech",
-    included: false,
-  },
-  {
-    id: "maid-of-honor-speech",
-    label: "Maid of honor speech",
-    included: false,
-  },
-  {
-    id: "bouquet-toss",
-    label: "Bouquet toss",
-    included: false,
-  },
-  {
-    id: "garter-toss",
-    label: "Garter toss",
-    included: false,
-  },
-  {
-    id: "sparkler-exit",
-    label: "Sparkler exit",
-    included: false,
-  },
-];
-
 export default function TimelinePage() {
-  const [items, setItems] = useState<TimelineItem[]>(defaultItems);
-  const [customItems, setCustomItems] = useState<TimelineItem[]>([]);
+  const [partner1Name, setPartner1Name] = useState("Partner 1");
+  const [partner2Name, setPartner2Name] = useState("Partner 2");
+
+  const [items, setItems] = useState<TimelineItemState[]>(() =>
+    itemOrder.map((id) => ({ id, included: false }))
+  );
+  const [customItems, setCustomItems] = useState<CustomItem[]>([]);
+
+  // Load partner names from localStorage once on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = window.localStorage.getItem("posesuiteBasics");
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data.partner1Name && typeof data.partner1Name === "string") {
+          setPartner1Name(data.partner1Name);
+        }
+        if (data.partner2Name && typeof data.partner2Name === "string") {
+          setPartner2Name(data.partner2Name);
+        }
+      }
+    } catch {
+      // ignore if parsing fails
+    }
+  }, []);
 
   const toggleIncluded = (id: string, source: "default" | "custom") => {
-    const updater = (list: TimelineItem[]) =>
-      list.map((item) =>
-        item.id === id ? { ...item, included: !item.included } : item
-      );
-
     if (source === "default") {
-      setItems((prev) => updater(prev));
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, included: !item.included } : item
+        )
+      );
     } else {
-      setCustomItems((prev) => updater(prev));
+      setCustomItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, included: !item.included } : item
+        )
+      );
     }
   };
 
@@ -302,30 +284,37 @@ export default function TimelinePage() {
           </h2>
 
           <div style={{ display: "grid", gap: "0.6rem" }}>
-            {items.map((item) => (
-              <label
-                key={item.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.6rem",
-                  padding: "0.55rem 0.8rem",
-                  borderRadius: "0.8rem",
-                  border: "1px solid #E2E2DD",
-                  backgroundColor: "#FCFCF9",
-                  fontSize: "0.95rem",
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={item.included}
-                  onChange={() => toggleIncluded(item.id, "default")}
-                  style={{ accentColor: "#A3B18A" }}
-                />
-                <span>{item.label}</span>
-              </label>
-            ))}
+            {items.map((item) => {
+              const label = buildLabel(
+                item.id,
+                partner1Name || "Partner 1",
+                partner2Name || "Partner 2"
+              );
+              return (
+                <label
+                  key={item.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.6rem",
+                    padding: "0.55rem 0.8rem",
+                    borderRadius: "0.8rem",
+                    border: "1px solid #E2E2DD",
+                    backgroundColor: "#FCFCF9",
+                    fontSize: "0.95rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={item.included}
+                    onChange={() => toggleIncluded(item.id, "default")}
+                    style={{ accentColor: "#A3B18A" }}
+                  />
+                  <span>{label}</span>
+                </label>
+              );
+            })}
           </div>
         </section>
 
