@@ -62,8 +62,8 @@ export default function BasicsPage() {
               color: "#555",
             }}
           >
-            Before we dive into timelines and shot lists, share your essential
-            wedding details so my team can build a calm, organized photography
+            Before we dive into timelines and shot lists, lets add a few essential
+            details so we can start to build an organized photography
             plan around your day.
           </p>
         </div>
