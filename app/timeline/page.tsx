@@ -8,110 +8,154 @@ type TimelineItem = {
   included: boolean;
 };
 
+// In a future version, these will come from the Basics page:
+const partner1NamePlaceholder = "Partner 1";
+const partner2NamePlaceholder = "Partner 2";
+
 const defaultItems: TimelineItem[] = [
   {
-    id: "hair-makeup",
-    label: "Hair & makeup",
-    included: true,
-  },
-  {
-    id: "photographer-start",
-    label: "Photographer arrival",
-    included: true,
-  },
-  {
-    id: "videographer-start",
-    label: "Videographer arrival",
+    id: "partner1-prep",
+    label: `${partner1NamePlaceholder} getting ready photos`,
     included: false,
   },
   {
-    id: "bride-prep",
-    label: "Bride / Partner 1 getting ready photos",
-    included: true,
-  },
-  {
-    id: "groom-prep",
-    label: "Groom / Partner 2 getting ready photos",
-    included: true,
-  },
-  {
-    id: "bridesmaids-first-look",
-    label: "Bridesmaids / wedding party first look",
+    id: "partner2-prep",
+    label: `${partner2NamePlaceholder} getting ready photos`,
     included: false,
   },
   {
-    id: "parent-first-look",
-    label: "Parent first look (for example: bride & dad)",
+    id: "partner1-bridesmaids-first-look",
+    label: `${partner1NamePlaceholder} first look with wedding party / bridesmaids`,
+    included: false,
+  },
+  {
+    id: "partner1-father-first-look",
+    label: `${partner1NamePlaceholder} first look with father`,
     included: false,
   },
   {
     id: "couple-first-look",
-    label: "Couple first look",
+    label: `${partner1NamePlaceholder} & ${partner2NamePlaceholder} first look`,
+    included: false,
+  },
+  {
+    id: "couple-first-touch",
+    label: `${partner1NamePlaceholder} & ${partner2NamePlaceholder} first touch`,
+    included: false,
+  },
+  {
+    id: "private-vows",
+    label: "Private vows",
     included: false,
   },
   {
     id: "ceremony",
     label: "Ceremony",
-    included: true,
-  },
-  {
-    id: "cocktail-hour",
-    label: "Cocktail hour",
-    included: true,
+    included: false,
   },
   {
     id: "family-portraits",
     label: "Family portraits",
-    included: true,
+    included: false,
+  },
+  {
+    id: "couple-portraits",
+    label: `${partner1NamePlaceholder} & ${partner2NamePlaceholder} portraits`,
+    included: false,
   },
   {
     id: "wedding-party-portraits",
     label: "Wedding party portraits",
-    included: true,
+    included: false,
   },
   {
-    id: "couple-portraits",
-    label: "Couple portraits",
-    included: true,
+    id: "church-exit",
+    label: "Church exit",
+    included: false,
   },
   {
-    id: "reception-entrance",
-    label: "Reception entrance & intros",
-    included: true,
+    id: "church-portrait-session",
+    label: "Church portrait session",
+    included: false,
+  },
+  {
+    id: "extended-family-photos",
+    label: "Extended family photos",
+    included: false,
+  },
+  {
+    id: "additional-location-portraits",
+    label: "Additional location portraits",
+    included: false,
+  },
+  {
+    id: "cocktail-hour",
+    label: "Cocktail hour",
+    included: false,
+  },
+  {
+    id: "grand-entrance",
+    label: "Grand entrance",
+    included: false,
+  },
+  {
+    id: "welcome-speech",
+    label: "Welcome speech",
+    included: false,
+  },
+  {
+    id: "welcome-blessing",
+    label: "Welcome blessing",
+    included: false,
+  },
+  {
+    id: "cake-cutting",
+    label: "Cake cutting",
+    included: false,
   },
   {
     id: "first-dance",
     label: "First dance",
-    included: true,
-  },
-  {
-    id: "parent-dances",
-    label: "Parent dances",
     included: false,
   },
   {
-    id: "toasts",
-    label: "Toasts / speeches",
-    included: true,
-  },
-  {
-    id: "cake-cutting",
-    label: "Cake cutting / dessert moment",
+    id: "mother-son-dance",
+    label: "Mother–son dance",
     included: false,
   },
   {
-    id: "dance-floor",
-    label: "Open dance floor coverage",
-    included: true,
-  },
-  {
-    id: "private-last-dance",
-    label: "Private last dance",
+    id: "father-daughter-dance",
+    label: "Father–daughter dance",
     included: false,
   },
   {
-    id: "exit",
-    label: "Exit / send-off photos",
+    id: "table-race",
+    label: "Table race / table photos",
+    included: false,
+  },
+  {
+    id: "best-man-speech",
+    label: "Best man speech",
+    included: false,
+  },
+  {
+    id: "maid-of-honor-speech",
+    label: "Maid of honor speech",
+    included: false,
+  },
+  {
+    id: "bouquet-toss",
+    label: "Bouquet toss",
+    included: false,
+  },
+  {
+    id: "garter-toss",
+    label: "Garter toss",
+    included: false,
+  },
+  {
+    id: "sparkler-exit",
+    label: "Sparkler exit",
     included: false,
   },
 ];
@@ -148,7 +192,7 @@ export default function TimelinePage() {
       {
         id: newId,
         label: "",
-        included: true,
+        included: false,
       },
     ]);
   };
@@ -156,9 +200,6 @@ export default function TimelinePage() {
   const handleRemoveCustom = (id: string) => {
     setCustomItems((prev) => prev.filter((item) => item.id !== id));
   };
-
-  const includedDefaults = items.filter((i) => i.included);
-  const notIncludedDefaults = items.filter((i) => !i.included);
 
   return (
     <main
@@ -227,9 +268,8 @@ export default function TimelinePage() {
                 margin: 0,
               }}
             >
-              Check the moments that are part of your day. You can also add any
-              additional events or special traditions you&apos;d like me to plan
-              around.
+              These are common parts of the wedding day. Check everything that
+              you would like to have photographed.
             </p>
           </div>
           <a
@@ -260,19 +300,9 @@ export default function TimelinePage() {
           >
             Core moments
           </h2>
-          <p
-            style={{
-              fontSize: "0.9rem",
-              color: "#666",
-              marginBottom: "1rem",
-            }}
-          >
-            These are common parts of a wedding day. Check everything that will
-            be happening at your wedding.
-          </p>
 
           <div style={{ display: "grid", gap: "0.6rem" }}>
-            {includedDefaults.map((item) => (
+            {items.map((item) => (
               <label
                 key={item.id}
                 style={{
@@ -291,55 +321,12 @@ export default function TimelinePage() {
                   type="checkbox"
                   checked={item.included}
                   onChange={() => toggleIncluded(item.id, "default")}
+                  style={{ accentColor: "#A3B18A" }}
                 />
                 <span>{item.label}</span>
               </label>
             ))}
           </div>
-
-          {notIncludedDefaults.length > 0 && (
-            <details
-              style={{
-                marginTop: "1rem",
-                fontSize: "0.85rem",
-                color: "#666",
-              }}
-            >
-              <summary style={{ cursor: "pointer" }}>
-                More moments you can add ({notIncludedDefaults.length})
-              </summary>
-              <div
-                style={{
-                  marginTop: "0.6rem",
-                  display: "grid",
-                  gap: "0.5rem",
-                }}
-              >
-                {notIncludedDefaults.map((item) => (
-                  <label
-                    key={item.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      fontSize: "0.9rem",
-                      padding: "0.45rem 0.7rem",
-                      borderRadius: "0.6rem",
-                      border: "1px solid #E2E2DD",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={item.included}
-                      onChange={() => toggleIncluded(item.id, "default")}
-                    />
-                    <span>{item.label}</span>
-                  </label>
-                ))}
-              </div>
-            </details>
-          )}
         </section>
 
         {/* Additional moments */}
@@ -383,6 +370,7 @@ export default function TimelinePage() {
                   type="checkbox"
                   checked={item.included}
                   onChange={() => toggleIncluded(item.id, "custom")}
+                  style={{ accentColor: "#A3B18A" }}
                 />
                 <input
                   type="text"
