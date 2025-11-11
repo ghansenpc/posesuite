@@ -22,7 +22,10 @@ const events: EventBlock[] = [
       "Suite prep photos: flat-lay details, Ellie individual getting ready, bridesmaids group, first look with bridesmaids and father of the bride.",
     shots: [
       { id: "flatlay", label: "Flat-lay details" },
+      { id: "dress-main", label: "Ceremony dress photos" },
+      { id: "dress-reception", label: "Reception dress photos" },
       { id: "bride-ready", label: "Ellie getting ready" },
+      { id: "mom-help-dress", label: "Mom helping with the dress" },
       { id: "bridesmaids", label: "Bridesmaids group" },
       { id: "firstlook-dad", label: "First look with father" },
       { id: "firstlook-maids", label: "First look with bridesmaids" },
@@ -40,6 +43,9 @@ const events: EventBlock[] = [
       { id: "arrival", label: "Nick arriving" },
       { id: "walk-up", label: "Ellie walking up" },
       { id: "reaction", label: "First look reaction" },
+      { id: "veil-kiss", label: "Kiss under the veil" },
+      { id: "vows-reading", label: "Reading vows" },
+      { id: "stairs-walk", label: "Walking up stairs" },
       { id: "couple-portraits", label: "Couple portraits on riverwalk" },
     ],
   },
@@ -50,13 +56,65 @@ const events: EventBlock[] = [
     location:
       "The Westin Chicago River North and Riverwalk (North Side of River)",
     notes:
-      "Bridesmaids, groomsmen, couple, immediate family at Westin + Riverwalk.",
+      "Bridesmaids, groomsmen, couple, and immediate family portraits at Westin + Riverwalk.",
     shots: [
-      { id: "bridesmaids-group", label: "Bridesmaids group" },
-      { id: "groomsmen-group", label: "Groomsmen group" },
-      { id: "couple", label: "Couple portraits" },
-      { id: "brides-family", label: "Bride’s immediate family" },
-      { id: "grooms-family", label: "Groom’s immediate family" },
+      { id: "couple", label: "Bride & Groom couple portraits" },
+      {
+        id: "bg-grooms-parents",
+        label: "Bride & Groom with groom’s parents",
+      },
+      {
+        id: "bg-grooms-family",
+        label: "Bride & Groom with groom’s family",
+      },
+      {
+        id: "bg-groom-siblings",
+        label: "Bride & Groom with groom’s siblings",
+      },
+      {
+        id: "bg-brides-family",
+        label: "Bride & Groom with bride’s family",
+      },
+      {
+        id: "bg-brides-parents",
+        label: "Bride & Groom with bride’s parents",
+      },
+      {
+        id: "bg-both-parents",
+        label: "Bride & Groom with both sets of parents",
+      },
+      {
+        id: "bg-both-families",
+        label: "Bride & Groom with both families",
+      },
+      {
+        id: "bride-maids-candid",
+        label: "Bride with bridesmaids – candid group",
+      },
+      {
+        id: "bride-maids-sitting",
+        label: "Bride with bridesmaids – seated group",
+      },
+      {
+        id: "bride-each-maid",
+        label: "Bride with each bridesmaid",
+      },
+      {
+        id: "groom-group-standing",
+        label: "Groom with groomsmen – standing group",
+      },
+      {
+        id: "groom-group-sitting",
+        label: "Groom with groomsmen – seated group",
+      },
+      {
+        id: "groom-each-groomsman",
+        label: "Groom with each groomsman",
+      },
+      {
+        id: "groom-candid",
+        label: "Groom with groomsmen – candid",
+      },
     ],
   },
   {
@@ -67,23 +125,55 @@ const events: EventBlock[] = [
     notes:
       "Full wedding party and fun photos under the pillars + trolley candids + posed party photo + couple portraits if time allows.",
     shots: [
-      { id: "party-pillars", label: "Full party under pillars" },
+      { id: "party-pillars", label: "Full wedding party under pillars" },
+      { id: "party-walking", label: "Full wedding party walking" },
+      { id: "party-smiling", label: "Full wedding party smiling" },
       { id: "trolley", label: "Trolley candids (getting on/off)" },
       { id: "posed-party", label: "Posed full-party photo" },
-      { id: "couple-extra", label: "Extra couple portraits" },
+      {
+        id: "couple-pillars",
+        label: "Bride & Groom under the pillars",
+      },
+      { id: "couple-extra", label: "Extra couple portraits (if time)" },
     ],
   },
   {
     id: "transport",
     time: "3:00 PM – 3:30 PM",
-    title: "Transportation to Rockwell on the River",
-    location: "Trolley to 3057 N Rockwell St, Chicago IL",
+    title: "Rockwell & Distillery Portraits",
+    location:
+      "Rockwell on the River & Judson & Moore Distillery, 3057 N Rockwell St, Chicago IL",
     notes:
-      "Photos of boarding the trolley, guests seated before departure. Photographers do not ride.",
+      "Arriving to Rockwell area and Judson & Moore Distillery. Focus on signage, arrival moments, and distillery portraits.",
     shots: [
-      { id: "boarding", label: "Boarding trolley" },
-      { id: "seated", label: "Guests seated inside trolley" },
-      { id: "departure", label: "Trolley departure shot" },
+      {
+        id: "rockwell-sign",
+        label: "Wedding party walking under the Rockwell sign",
+      },
+      {
+        id: "groom-each-distillery",
+        label: "Groom with each groomsman at distillery",
+      },
+      {
+        id: "bride-each-distillery",
+        label: "Bride with each bridesmaid at distillery",
+      },
+      {
+        id: "bg-barrel-room",
+        label: "Bride & Groom in barrel room",
+      },
+      {
+        id: "party-distillery",
+        label: "Full wedding party in distillery",
+      },
+      {
+        id: "officiant-photo",
+        label: "Photo with officiant",
+      },
+      {
+        id: "party-candids-cocktails",
+        label: "Wedding party candids with cocktails",
+      },
     ],
   },
   {
@@ -92,15 +182,18 @@ const events: EventBlock[] = [
     title: "Venue Portraits (Pre-Ceremony)",
     location: "Rockwell on the River, 3057 N Rockwell St, Chicago IL",
     notes:
-      "Arrival at venue, bride and groom exiting trolley, walking to venue, groomsmen at distillery (barrel room), individual groomsmen/bridesmaid portraits, couple portraits, wedding party walking shots if time.",
+      "Arrival at venue, bride and groom exiting trolley, walking to venue, groomsmen at distillery barrel room, individual portraits, additional couple portraits, and full party entering venue if time allows.",
     shots: [
       { id: "arrival", label: "Arrival / trolley exit" },
       { id: "walkway", label: "Walking to venue" },
       { id: "groomsmen-distillery", label: "Groomsmen group (barrel room)" },
-      { id: "groom-solo", label: "Groom individuals" },
-      { id: "bridesmaids-solo", label: "Bridesmaids individuals" },
+      { id: "groom-solo", label: "Groom individual portraits" },
+      {
+        id: "bridesmaids-solo",
+        label: "Bridesmaids individual portraits",
+      },
       { id: "couple-venue", label: "Couple portraits at venue" },
-      { id: "party-walk", label: "Full party entering venue" },
+      { id: "party-walk", label: "Full party entering venue (if time)" },
     ],
   },
   {
@@ -109,7 +202,7 @@ const events: EventBlock[] = [
     title: "Ceremony",
     location: "Rockwell on the River, 3057 N Rockwell St, Chicago IL",
     notes:
-      "Pre-ceremony room setup, guest arrivals, processional, vows, kiss, recessional, immediate-family portraits post-ceremony.",
+      "Pre-ceremony room setup, guest arrivals, processional, vows, kiss, recessional, and immediate-family portraits post-ceremony.",
     shots: [
       { id: "setup", label: "Ceremony setup (empty room)" },
       { id: "arrivals", label: "Guest arrivals" },
@@ -129,17 +222,75 @@ const events: EventBlock[] = [
     title: "Cocktail Hour + Reception",
     location: "Rockwell on the River, 3057 N Rockwell St, Chicago IL",
     notes:
-      "Cocktail hour (5:30–6:30), party entrance (6:30), cake cutting, thank-you speech, father speech + prayer, buffet (7 PM), first dances (8 PM), dancefloor candids and band.",
+      "Cocktail hour (5:30–6:30), party entrance (6:30), cake cutting, thank-you speech, father speech + prayer, buffet (7 PM), parent dances (around 8 PM), dancefloor candids and band.",
     shots: [
       { id: "cocktail", label: "Cocktail hour candids" },
       { id: "entrance", label: "Wedding party entrance" },
-      { id: "cake", label: "Cake cutting" },
+      { id: "cake", label: "Cake cutting + cake detail" },
       { id: "thankyou", label: "Bride & Groom thank-you speech" },
-      { id: "fob-speech", label: "Father of Bride speech + prayer" },
-      { id: "buffet", label: "Buffet + dessert stand" },
+      { id: "fob-speech", label: "Father of the Bride speech + prayer" },
+      { id: "buffet", label: "Buffet + dessert stand details" },
       { id: "first-dances", label: "Parent dances" },
       { id: "dancefloor", label: "Open dancefloor candids" },
       { id: "band", label: "Live band photos" },
+      {
+        id: "officiant-reception",
+        label: "Photo with officiant (reception)",
+      },
+      {
+        id: "davis-family",
+        label: "Davis family (bride paternal side)",
+      },
+      {
+        id: "ragle-family",
+        label: "Ragle family (bride maternal side)",
+      },
+      {
+        id: "bg-both-parents",
+        label: "Bride & Groom with both sets of parents",
+      },
+      {
+        id: "bg-both-parents-siblings",
+        label: "Bride & Groom with both parents + siblings",
+      },
+      {
+        id: "extended-officiant",
+        label: "Extended family with officiant",
+      },
+    ],
+  },
+  {
+    id: "extras-7pm",
+    time: "7:00 PM – Late",
+    title: "Evening Extras & Second Dress",
+    location: "Rockwell on the River, 3057 N Rockwell St, Chicago IL",
+    notes:
+      "Evening reminders, extra detail shots, and second dress change around 9 PM.",
+    shots: [
+      {
+        id: "extra-details",
+        label: "Extra reception details (room full of guests)",
+      },
+      {
+        id: "missed-family",
+        label: "Any missed family or friend group requests",
+      },
+      {
+        id: "dress-change",
+        label: "Bride changing into second dress (~9 PM)",
+      },
+      {
+        id: "bride-second-dress",
+        label: "Portraits of bride in second dress",
+      },
+      {
+        id: "couple-second-dress",
+        label: "Couple portraits in second dress",
+      },
+      {
+        id: "dancefloor-second-dress",
+        label: "Dancefloor shots featuring second dress",
+      },
     ],
   },
 ];
@@ -203,7 +354,7 @@ export default function EllieAndMark() {
           marginBottom: "1rem",
         }}
       >
-        Ellie Davis & Nicholas Schweska · November 15 2025
+        Ellie Davis &amp; Nicholas Schweska · November 15 2025
       </h1>
 
       {events.map((ev) => {
