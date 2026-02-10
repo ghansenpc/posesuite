@@ -1,0 +1,214 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+export default function WeddingInfoPage() {
+  // Items that should disappear once checked
+  const checklistItems = useMemo(
+    () => [
+      {
+        id: "start-time",
+        label: "Confirmed Start Time",
+        value: "12:30 PM",
+      },
+      {
+        id: "church-name",
+        label: "Church",
+        value: "Queen of All Saints",
+      },
+      {
+        id: "church-address",
+        label: "Address",
+        value: "6280 N Sauganash Ave, Chicago, IL",
+      },
+    ],
+    []
+  );
+
+  const [checked, setChecked] = useState(() => {
+    // all unchecked initially
+    return Object.fromEntries(checklistItems.map((i) => [i.id, false]));
+  });
+
+  const handleToggle = (id) => {
+    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const resetChecklist = () => {
+    setChecked(Object.fromEntries(checklistItems.map((i) => [i.id, false])));
+  };
+
+  return (
+    <main style={{ maxWidth: 820, margin: "0 auto", padding: "3.25rem 1.25rem", lineHeight: 1.6 }}>
+      <header style={{ marginBottom: "2rem" }}>
+        <h1 style={{ margin: 0 }}>Wedding Day Page</h1>
+        <p style={{ margin: "0.5rem 0 0", opacity: 0.8 }}>
+          (Standalone reference page — add more details anytime)
+        </p>
+
+        {/* Bold info at the top */}
+        <div
+          style={{
+            marginTop: "1.5rem",
+            padding: "1.25rem",
+            border: "1px solid rgba(0,0,0,0.12)",
+            borderRadius: 12,
+          }}
+        >
+          <div style={{ fontWeight: 800, fontSize: "1.1rem" }}>
+            Rosie McHatton + Tom Hamilton
+          </div>
+          <div style={{ fontWeight: 800 }}>Wedding Date: 02/14/2026</div>
+
+          <div style={{ marginTop: "0.75rem" }}>
+            <div>
+              <span style={{ fontWeight: 700 }}>Rosie:</span>{" "}
+              <a href="tel:13316432718">331-643-2718</a>
+            </div>
+            <div>
+              <span style={{ fontWeight: 700 }}>Tom:</span>{" "}
+              <a href="tel:17733185549">773-318-5549</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Checklist section (items disappear when checked) */}
+      <section
+        style={{
+          padding: "1.25rem",
+          border: "1px solid rgba(0,0,0,0.12)",
+          borderRadius: 12,
+          marginBottom: "1.5rem",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", alignItems: "center" }}>
+          <h2 style={{ margin: 0 }}>Confirm &amp; Check Off</h2>
+          <button
+            type="button"
+            onClick={resetChecklist}
+            style={{
+              padding: "0.5rem 0.75rem",
+              borderRadius: 10,
+              border: "1px solid rgba(0,0,0,0.2)",
+              background: "transparent",
+              cursor: "pointer",
+              fontWeight: 600,
+            }}
+          >
+            Reset
+          </button>
+        </div>
+
+        <p style={{ marginTop: "0.5rem", opacity: 0.8 }}>
+          These items will disappear once checked.
+        </p>
+
+        <div style={{ marginTop: "0.75rem", display: "grid", gap: "0.75rem" }}>
+          {checklistItems
+            .filter((item) => !checked[item.id]) // hide when checked
+            .map((item) => (
+              <label
+                key={item.id}
+                style={{
+                  display: "flex",
+                  gap: "0.75rem",
+                  alignItems: "flex-start",
+                  padding: "0.75rem",
+                  borderRadius: 12,
+                  border: "1px solid rgba(0,0,0,0.10)",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={!!checked[item.id]}
+                  onChange={() => handleToggle(item.id)}
+                  style={{ marginTop: 4 }}
+                />
+                <div>
+                  <div style={{ fontWeight: 800 }}>{item.label}</div>
+                  <div style={{ opacity: 0.9 }}>{item.value}</div>
+                </div>
+              </label>
+            ))}
+
+          {checklistItems.every((i) => checked[i.id]) && (
+            <div
+              style={{
+                padding: "0.75rem",
+                borderRadius: 12,
+                border: "1px dashed rgba(0,0,0,0.25)",
+                opacity: 0.9,
+              }}
+            >
+              ✅ All checklist items completed.
+            </div>
+          )}
+        </div>
+
+        {/* Placeholder for later additions */}
+        <div style={{ marginTop: "1.25rem" }}>
+          <h3 style={{ marginBottom: "0.5rem" }}>Shot List (add later)</h3>
+          <div
+            style={{
+              padding: "0.75rem",
+              borderRadius: 12,
+              border: "1px dashed rgba(0,0,0,0.25)",
+              opacity: 0.85,
+            }}
+          >
+            Paste your shot list here later.
+          </div>
+        </div>
+      </section>
+
+      {/* Location section (static reference; checklist handles the “disappearing” confirmation) */}
+      <section
+        style={{
+          padding: "1.25rem",
+          border: "1px solid rgba(0,0,0,0.12)",
+          borderRadius: 12,
+          marginBottom: "1.5rem",
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Ceremony Location</h2>
+        <div style={{ fontWeight: 800 }}>Queen of All Saints</div>
+        <div>6280 N Sauganash Ave, Chicago, IL</div>
+      </section>
+
+      {/* Contacts */}
+      <section
+        style={{
+          padding: "1.25rem",
+          border: "1px solid rgba(0,0,0,0.12)",
+          borderRadius: 12,
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Contacts</h2>
+
+        <div style={{ display: "grid", gap: "0.75rem" }}>
+          <div>
+            <div style={{ fontWeight: 800 }}>Day-Of Contact: Steph</div>
+            <div>
+              <a href="tel:18475333382">847-533-3382</a>
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 800 }}>Videographer: Jose</div>
+            <div>
+              <a href="tel:18153541076">815-354-1076</a>
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 800 }}>P2: Vitaliia</div>
+            <div>
+              <a href="tel:12245584997">224-558-4997</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
