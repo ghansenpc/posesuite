@@ -1,409 +1,338 @@
-"""use client"";
+"use client";
 
-import { useMemo, useState } from ""react"";
+import React, { useEffect, useMemo, useState } from "react";
 
-export default function WeddingInfoPage() {
-  // Items that should disappear once checked (logistics)
-  const checklistItems = useMemo(
-    () => [
-      { id: ""start-time"", label: ""Confirmed Start Time"", value: ""12:30 PM"" },
-      { id: ""church-name"", label: ""Church"", value: ""Queen of All Saints"" },
-      { id: ""church-address"", label: ""Address"", value: ""6280 N Sauganash Ave, Chicago, IL"" },
-    ],
-    []
-  );
+type Contact = {
+  label: string;
+  name: string;
+  phone: string;
+};
 
-  const [checked, setChecked] = useState(() =>
-    Object.fromEntries(checklistItems.map((i) => [i.id, false]))
-  );
+type Shot = {
+  id: string;
+  label: string;
+  location: "Church" | "Reception" | "Other";
+  category: string; // e.g., "Family", "Ceremony", "Details"
+  subcategory?: string; // e.g., "Family (Church)"
+};
 
-  const handleToggle = (id) => {
-    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+type ShotGroup = {
+  title: string; // e.g., "CHURCH"
+  sections: Array<{
+    title: string; // e.g., "Family (at Church)"
+    shots: Shot[];
+  }>;
+};
+
+const STORAGE_KEY = "poseSuite_shotlist_rosie_and_tom_v1";
+
+function formatPhoneForTel(raw: string) {
+  // keeps digits and leading +
+  const tel = raw.replace(/[^\d+]/g, "");
+  return tel || raw;
+}
+
+export default function RosieAndTomShotListPage() {
+  /**
+   * ✅ Replace these placeholders with your real info.
+   * If you paste me the names/date/phones/shot list, I’ll drop them in for you.
+   */
+  const event = {
+    title: "Rosie & Tom",
+    date: "2026-03-14",
+    locationName: "St. Example Church",
+    addressLine: "123 Church St, Chicago, IL",
+    notes:
+      "Notes: Arrive 30 min early. Confirm family members present before formal groupings.",
   };
 
-  const resetChecklist = () => {
-    setChecked(Object.fromEntries(checklistItems.map((i) => [i.id, false])));
-  };
+  const contacts: Contact[] = [
+    { label: "Bride", name: "Rosie Lastname", phone: "(312) 555-0123" },
+    { label: "Groom", name: "Tom Lastname", phone: "(312) 555-0456" },
+    { label: "Planner", name: "Planner Name", phone: "(773) 555-0789" },
+    // Add more as needed
+  ];
 
-  // Shot list checklist items (church formals) — disappear once checked
-  const shotListItems = useMemo(
-    () => [
-      // 1) Bride Solo
-      { id: ""solo-bride-alone"", group: ""Bride Solo"", label: ""Bride alone"" },
-      { id: ""solo-bride-bouquet"", group: ""Bride Solo"", label: ""Bride with bouquet"" },
-      { id: ""solo-bride-full"", group: ""Bride Solo"", label: ""Bride full length"" },
-      { id: ""solo-bride-close"", group: ""Bride Solo"", label: ""Bride close-up"" },
+  /**
+   * Shot List Structure:
+   * - Groups (Church / Reception / Other)
+   * - Inside each group: sections
+   * - Each section has shot items (checkbox)
+   *
+   * ✅ Church → Family subcategory is included below.
+   * Replace labels with your real family shot list.
+   */
+  const groups: ShotGroup[] = [
+    {
+      title: "CHURCH",
+      sections: [
+        {
+          title: "Family (at Church)",
+          shots: [
+            { id: "ch-fam-001", label: "Couple + Both Parents", location: "Church", category: "Family", subcategory: "Family (Church)" },
+            { id: "ch-fam-002", label: "Couple + Bride’s Immediate Family", location: "Church", category: "Family", subcategory: "Family (Church)" },
+            { id: "ch-fam-003", label: "Couple + Groom’s Immediate Family", location: "Church", category: "Family", subcategory: "Family (Church)" },
+            { id: "ch-fam-004", label: "Couple + Siblings (Both Sides)", location: "Church", category: "Family", subcategory: "Family (Church)" },
+            { id: "ch-fam-005", label: "Bride with Parents", location: "Church", category: "Family", subcategory: "Family (Church)" },
+            { id: "ch-fam-006", label: "Groom with Parents", location: "Church", category: "Family", subcategory: "Family (Church)" },
+            // Add your full family list here
+          ],
+        },
+        {
+          title: "Ceremony / Details",
+          shots: [
+            { id: "ch-det-001", label: "Exterior establishing shot of church", location: "Church", category: "Details" },
+            { id: "ch-det-002", label: "Programs / signage / florals", location: "Church", category: "Details" },
+            { id: "ch-cer-001", label: "Processional", location: "Church", category: "Ceremony" },
+            { id: "ch-cer-002", label: "First kiss", location: "Church", category: "Ceremony" },
+            // Add more
+          ],
+        },
+      ],
+    },
+    {
+      title: "RECEPTION",
+      sections: [
+        {
+          title: "Details",
+          shots: [
+            { id: "rec-det-001", label: "Room wide shot", location: "Reception", category: "Details" },
+            { id: "rec-det-002", label: "Table settings / centerpieces", location: "Reception", category: "Details" },
+            { id: "rec-det-003", label: "Cake / dessert table", location: "Reception", category: "Details" },
+          ],
+        },
+        {
+          title: "Key Moments",
+          shots: [
+            { id: "rec-mom-001", label: "Grand entrance", location: "Reception", category: "Moments" },
+            { id: "rec-mom-002", label: "First dance", location: "Reception", category: "Moments" },
+            { id: "rec-mom-003", label: "Toasts", location: "Reception", category: "Moments" },
+          ],
+        },
+      ],
+    },
+  ];
 
-      // 2) Bride + Groom
-      { id: ""bg-classic"", group: ""Bride + Groom"", label: ""Bride & Groom (classic)"" },
-      { id: ""bg-looking-camera"", group: ""Bride + Groom"", label: ""Bride & Groom looking at camera"" },
-      { id: ""bg-looking-eachother"", group: ""Bride + Groom"", label: ""Bride & Groom looking at each other"" },
+  // Flattened list for counts / filtering.
+  const allShots: Shot[] = useMemo(() => {
+    return groups.flatMap((g) => g.sections.flatMap((s) => s.shots));
+  }, [groups]);
 
-      // 3) Bride’s Side — WITH Groom
-      { id: ""bside-with-mom"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Mom"" },
-      { id: ""bside-with-dad"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Dad"" },
-      { id: ""bside-with-parents"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Mom & Dad"" },
-      { id: ""bside-with-brother"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Brother"" },
-      {
-        id: ""bside-with-brother-gf"",
-        group: ""Bride’s Side (with Groom)"",
-        label: ""Bride, Groom + Bride’s Brother + Brother’s Girlfriend (optional)"",
-      },
-      {
-        id: ""bside-with-grandma"",
-        group: ""Bride’s Side (with Groom)"",
-        label: ""Bride, Groom + Bride’s Maternal Grandmother"",
-      },
-      { id: ""bside-with-aunt-cathy"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Aunt Cathy (Godmother)"" },
-      {
-        id: ""bside-with-immediate"",
-        group: ""Bride’s Side (with Groom)"",
-        label: ""Bride, Groom + Bride’s Immediate Family (Mom, Dad, Brother)"",
-      },
-      {
-        id: ""bside-with-extended"",
-        group: ""Bride’s Side (with Groom)"",
-        label:
-          ""Bride, Groom + Bride’s Extended Family (Mom, Dad, Brother, Brother’s GF optional, Maternal Grandma, Aunt Cathy)"",
-      },
+  // completion state: id -> boolean
+  const [doneMap, setDoneMap] = useState<Record<string, boolean>>({});
+  const [showMode, setShowMode] = useState<"all" | "remaining">("remaining"); // toggle
 
-      // 4) Bride’s Side — WITHOUT Groom
-      { id: ""bside-no-mom"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Mom"" },
-      { id: ""bside-no-dad"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Dad"" },
-      { id: ""bside-no-parents"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Mom & Dad"" },
-      { id: ""bside-no-brother"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Brother"" },
-      {
-        id: ""bside-no-brother-gf"",
-        group: ""Bride’s Side (without Groom)"",
-        label: ""Bride + Bride’s Brother + Brother’s Girlfriend (optional)"",
-      },
-      { id: ""bside-no-grandma"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Maternal Grandmother"" },
-      { id: ""bside-no-aunt-cathy"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Aunt Cathy (Godmother)"" },
-      {
-        id: ""bside-no-immediate"",
-        group: ""Bride’s Side (without Groom)"",
-        label: ""Bride + Bride’s Immediate Family (Mom, Dad, Brother)"",
-      },
-      {
-        id: ""bside-no-extended"",
-        group: ""Bride’s Side (without Groom)"",
-        label:
-          ""Bride + Bride’s Extended Family (Mom, Dad, Brother, Brother’s GF optional, Maternal Grandma, Aunt Cathy)"",
-      },
-
-      // 5) Both Families Together
-      { id: ""both-parents"", group: ""Both Families Together"", label: ""Bride & Groom + Both Sets of Parents"" },
-      {
-        id: ""both-immediate"",
-        group: ""Both Families Together"",
-        label: ""Bride & Groom + Immediate Family (both sides) (Parents + Siblings)"",
-      },
-      { id: ""both-all"", group: ""Both Families Together"", label: ""Bride & Groom + All Family (everyone listed)"" },
-
-      // 6) Groom’s Side — WITH Bride
-      { id: ""gside-with-mom"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Mom"" },
-      { id: ""gside-with-dad"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Dad"" },
-      { id: ""gside-with-parents"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Mom & Dad"" },
-      { id: ""gside-with-brother"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Brother Lucio"" },
-      {
-        id: ""gside-with-godparents"",
-        group: ""Groom’s Side (with Bride)"",
-        label: ""Bride, Groom + Groom’s Godparents (Richard Peaslee)"",
-      },
-      {
-        id: ""gside-with-immediate"",
-        group: ""Groom’s Side (with Bride)"",
-        label: ""Bride, Groom + Groom’s Immediate Family (Mom, Dad, Lucio)"",
-      },
-      {
-        id: ""gside-with-extended"",
-        group: ""Groom’s Side (with Bride)"",
-        label: ""Bride, Groom + Groom’s Extended Family (Mom, Dad, Lucio, Godparents)"",
-      },
-
-      // 7) Groom’s Side — WITHOUT Bride
-      { id: ""gside-no-mom"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Mom"" },
-      { id: ""gside-no-dad"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Dad"" },
-      { id: ""gside-no-parents"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Mom & Dad"" },
-      { id: ""gside-no-brother"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Brother Lucio"" },
-      {
-        id: ""gside-no-godparents"",
-        group: ""Groom’s Side (without Bride)"",
-        label: ""Groom + Groom’s Godparents (Richard Peaslee)"",
-      },
-      {
-        id: ""gside-no-immediate"",
-        group: ""Groom’s Side (without Bride)"",
-        label: ""Groom + Groom’s Immediate Family (Mom, Dad, Lucio)"",
-      },
-      {
-        id: ""gside-no-extended"",
-        group: ""Groom’s Side (without Bride)"",
-        label: ""Groom + Groom’s Extended Family (Mom, Dad, Lucio, Godparents)"",
-      },
-
-      // 8) Friends / Special Mentions
-      { id: ""friend-bg-amy"", group: ""Friends / Special"", label: ""Bride & Groom + Amy (Bride’s HS friend)"" },
-      { id: ""friend-bride-amy"", group: ""Friends / Special"", label: ""Bride + Amy"" },
-      { id: ""friend-bg-amy-brother"", group: ""Friends / Special"", label: ""Bride, Groom + Amy + Bride’s Brother (optional)"" },
-    ],
-    []
-  );
-
-  const [shotChecked, setShotChecked] = useState(() =>
-    Object.fromEntries(shotListItems.map((i) => [i.id, false]))
-  );
-
-  const toggleShot = (id) => {
-    setShotChecked((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const resetShotList = () => {
-    setShotChecked(Object.fromEntries(shotListItems.map((i) => [i.id, false])));
-  };
-
-  const shotGroups = useMemo(() => {
-    const groups = {};
-    for (const item of shotListItems) {
-      if (!groups[item.group]) groups[item.group] = [];
-      groups[item.group].push(item);
+  // Load saved state
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { doneMap?: Record<string, boolean>; showMode?: "all" | "remaining" };
+      if (parsed.doneMap) setDoneMap(parsed.doneMap);
+      if (parsed.showMode) setShowMode(parsed.showMode);
+    } catch {
+      // ignore
     }
-    return groups;
-  }, [shotListItems]);
+  }, []);
+
+  // Persist state
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ doneMap, showMode }));
+    } catch {
+      // ignore
+    }
+  }, [doneMap, showMode]);
+
+  const totalCount = allShots.length;
+  const doneCount = allShots.reduce((acc, s) => acc + (doneMap[s.id] ? 1 : 0), 0);
+  const remainingCount = totalCount - doneCount;
+
+  function toggleShot(id: string) {
+    setDoneMap((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
+
+  function resetAll() {
+    if (!confirm("Reset all checkboxes?")) return;
+    setDoneMap({});
+    setShowMode("remaining");
+  }
+
+  // Helper: determine if a shot should display in current mode
+  function isVisible(shot: Shot) {
+    if (showMode === "all") return true;
+    // remaining only
+    return !doneMap[shot.id];
+  }
 
   return (
-    <main style={{ maxWidth: 820, margin: ""0 auto"", padding: ""3.25rem 1.25rem"", lineHeight: 1.6 }}>
-      <header style={{ marginBottom: ""2rem"" }}>
-        <h1 style={{ margin: 0 }}>Wedding Day Page</h1>
-        <p style={{ margin: ""0.5rem 0 0"", opacity: 0.8 }}>
-          (Standalone reference page — add more details anytime)
-        </p>
+    <main style={{ maxWidth: 980, margin: "0 auto", padding: "2rem 1.25rem", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      {/* Header */}
+      <header style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "baseline", justifyContent: "space-between" }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: "2rem", lineHeight: 1.15 }}>{event.title}</h1>
+          <p style={{ margin: "0.25rem 0 0", opacity: 0.8 }}>
+            <strong>Date:</strong> {event.date} &nbsp;•&nbsp; <strong>Location:</strong> {event.locationName}
+          </p>
+          <p style={{ margin: "0.25rem 0 0", opacity: 0.8 }}>{event.addressLine}</p>
+        </div>
 
-        {/* Bold info at the top */}
-        <div
-          style={{
-            marginTop: ""1.5rem"",
-            padding: ""1.25rem"",
-            border: ""1px solid rgba(0,0,0,0.12)"",
-            borderRadius: 12,
-          }}
-        >
-          <div style={{ fontWeight: 800, fontSize: ""1.1rem"" }}>Rosie McHatton + Tom Hamilton</div>
-          <div style={{ fontWeight: 800 }}>Wedding Date: 02/14/2026</div>
+        {/* Controls */}
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ fontSize: "0.95rem", opacity: 0.85 }}>
+            <strong>{remainingCount}</strong> remaining / {totalCount}
+          </span>
 
-          <div style={{ marginTop: ""0.75rem"" }}>
-            <div>
-              <span style={{ fontWeight: 700 }}>Rosie:</span>{"" ""}
-              <a href=""tel:13316432718"">331-643-2718</a>
-            </div>
-            <div>
-              <span style={{ fontWeight: 700 }}>Tom:</span>{"" ""}
-              <a href=""tel:17733185549"">773-318-5549</a>
-            </div>
+          <div style={{ display: "inline-flex", border: "1px solid rgba(0,0,0,0.15)", borderRadius: 12, overflow: "hidden" }}>
+            <button
+              type="button"
+              onClick={() => setShowMode("remaining")}
+              style={{
+                padding: "0.5rem 0.75rem",
+                border: "none",
+                cursor: "pointer",
+                background: showMode === "remaining" ? "rgba(0,0,0,0.08)" : "transparent",
+              }}
+              aria-pressed={showMode === "remaining"}
+            >
+              Unchecked only
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowMode("all")}
+              style={{
+                padding: "0.5rem 0.75rem",
+                border: "none",
+                cursor: "pointer",
+                background: showMode === "all" ? "rgba(0,0,0,0.08)" : "transparent",
+              }}
+              aria-pressed={showMode === "all"}
+            >
+              All shots
+            </button>
           </div>
+
+          <button
+            type="button"
+            onClick={resetAll}
+            style={{
+              padding: "0.5rem 0.75rem",
+              borderRadius: 12,
+              border: "1px solid rgba(0,0,0,0.15)",
+              background: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            Reset
+          </button>
         </div>
       </header>
 
-      {/* Checklist section (items disappear when checked) */}
-      <section
-        style={{
-          padding: ""1.25rem"",
-          border: ""1px solid rgba(0,0,0,0.12)"",
-          borderRadius: 12,
-          marginBottom: ""1.5rem"",
-        }}
-      >
-        <div style={{ display: ""flex"", justifyContent: ""space-between"", gap: ""1rem"", alignItems: ""center"" }}>
-          <h2 style={{ margin: 0 }}>Confirm &amp; Check Off</h2>
-          <button
-            type=""button""
-            onClick={resetChecklist}
-            style={{
-              padding: ""0.5rem 0.75rem"",
-              borderRadius: 10,
-              border: ""1px solid rgba(0,0,0,0.2)"",
-              background: ""transparent"",
-              cursor: ""pointer"",
-              fontWeight: 600,
-            }}
-          >
-            Reset
-          </button>
-        </div>
-
-        <p style={{ marginTop: ""0.5rem"", opacity: 0.8 }}>These items will disappear once checked.</p>
-
-        <div style={{ marginTop: ""0.75rem"", display: ""grid"", gap: ""0.75rem"" }}>
-          {checklistItems
-            .filter((item) => !checked[item.id])
-            .map((item) => (
-              <label
-                key={item.id}
-                style={{
-                  display: ""flex"",
-                  gap: ""0.75rem"",
-                  alignItems: ""flex-start"",
-                  padding: ""0.75rem"",
-                  borderRadius: 12,
-                  border: ""1px solid rgba(0,0,0,0.10)"",
-                }}
-              >
-                <input
-                  type=""checkbox""
-                  checked={!!checked[item.id]}
-                  onChange={() => handleToggle(item.id)}
-                  style={{ marginTop: 4 }}
-                />
-                <div>
-                  <div style={{ fontWeight: 800 }}>{item.label}</div>
-                  <div style={{ opacity: 0.9 }}>{item.value}</div>
-                </div>
-              </label>
-            ))}
-
-          {checklistItems.every((i) => checked[i.id]) && (
-            <div
-              style={{
-                padding: ""0.75rem"",
-                borderRadius: 12,
-                border: ""1px dashed rgba(0,0,0,0.25)"",
-                opacity: 0.9,
-              }}
-            >
-              ✅ All checklist items completed.
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* NEW: Church Formals Shot List Checklist */}
-      <section
-        style={{
-          padding: ""1.25rem"",
-          border: ""1px solid rgba(0,0,0,0.12)"",
-          borderRadius: 12,
-          marginBottom: ""1.5rem"",
-        }}
-      >
-        <div style={{ display: ""flex"", justifyContent: ""space-between"", gap: ""1rem"", alignItems: ""center"" }}>
-          <h2 style={{ margin: 0 }}>Church Formals Shot List</h2>
-          <button
-            type=""button""
-            onClick={resetShotList}
-            style={{
-              padding: ""0.5rem 0.75rem"",
-              borderRadius: 10,
-              border: ""1px solid rgba(0,0,0,0.2)"",
-              background: ""transparent"",
-              cursor: ""pointer"",
-              fontWeight: 600,
-            }}
-          >
-            Reset
-          </button>
-        </div>
-
-        <p style={{ marginTop: ""0.5rem"", opacity: 0.8 }}>
-          Check items off as you go — completed shots disappear.
-        </p>
-
-        <div style={{ marginTop: ""1rem"", display: ""grid"", gap: ""1.25rem"" }}>
-          {Object.entries(shotGroups).map(([groupName, items]) => {
-            const remaining = items.filter((i) => !shotChecked[i.id]);
-            if (remaining.length === 0) return null;
-
-            return (
-              <div key={groupName}>
-                <h3 style={{ margin: ""0 0 0.5rem"", fontSize: ""1.05rem"" }}>{groupName}</h3>
-                <div style={{ display: ""grid"", gap: ""0.6rem"" }}>
-                  {remaining.map((item) => (
-                    <label
-                      key={item.id}
-                      style={{
-                        display: ""flex"",
-                        gap: ""0.75rem"",
-                        alignItems: ""flex-start"",
-                        padding: ""0.75rem"",
-                        borderRadius: 12,
-                        border: ""1px solid rgba(0,0,0,0.10)"",
-                      }}
-                    >
-                      <input
-                        type=""checkbox""
-                        checked={!!shotChecked[item.id]}
-                        onChange={() => toggleShot(item.id)}
-                        style={{ marginTop: 4 }}
-                      />
-                      <div style={{ fontWeight: 700 }}>{item.label}</div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-
-          {shotListItems.every((i) => shotChecked[i.id]) && (
-            <div
-              style={{
-                padding: ""0.75rem"",
-                borderRadius: 12,
-                border: ""1px dashed rgba(0,0,0,0.25)"",
-                opacity: 0.9,
-              }}
-            >
-              ✅ All church formal shots completed.
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Location section */}
-      <section
-        style={{
-          padding: ""1.25rem"",
-          border: ""1px solid rgba(0,0,0,0.12)"",
-          borderRadius: 12,
-          marginBottom: ""1.5rem"",
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>Ceremony Location</h2>
-        <div style={{ fontWeight: 800 }}>Queen of All Saints</div>
-        <div>6280 N Sauganash Ave, Chicago, IL</div>
-      </section>
+      {/* Notes */}
+      {event.notes ? (
+        <section style={{ marginTop: "1rem", padding: "1rem", borderRadius: 16, border: "1px solid rgba(0,0,0,0.12)", background: "rgba(0,0,0,0.03)" }}>
+          <strong>Notes:</strong>
+          <div style={{ marginTop: "0.5rem", opacity: 0.9 }}>{event.notes}</div>
+        </section>
+      ) : null}
 
       {/* Contacts */}
-      <section
-        style={{
-          padding: ""1.25rem"",
-          border: ""1px solid rgba(0,0,0,0.12)"",
-          borderRadius: 12,
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>Contacts</h2>
-
-        <div style={{ display: ""grid"", gap: ""0.75rem"" }}>
-          <div>
-            <div style={{ fontWeight: 800 }}>Day-Of Contact: Steph</div>
-            <div>
-              <a href=""tel:18475333382"">847-533-3382</a>
+      <section style={{ marginTop: "1.25rem" }}>
+        <h2 style={{ margin: "0 0 0.5rem", fontSize: "1.25rem" }}>Contacts</h2>
+        <div style={{ display: "grid", gap: "0.75rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+          {contacts.map((c) => (
+            <div key={`${c.label}-${c.phone}`} style={{ padding: "1rem", borderRadius: 16, border: "1px solid rgba(0,0,0,0.12)" }}>
+              <div style={{ fontSize: "0.9rem", opacity: 0.75 }}>{c.label}</div>
+              <div style={{ fontWeight: 700, marginTop: 4 }}>{c.name}</div>
+              <a href={`tel:${formatPhoneForTel(c.phone)}`} style={{ display: "inline-block", marginTop: 6, textDecoration: "underline" }}>
+                {c.phone}
+              </a>
             </div>
-          </div>
-
-          <div>
-            <div style={{ fontWeight: 800 }}>Videographer: Jose</div>
-            <div>
-              <a href=""tel:18153541076"">815-354-1076</a>
-            </div>
-          </div>
-
-          <div>
-            <div style={{ fontWeight: 800 }}>P2: Vitaliia</div>
-            <div>
-              <a href=""tel:12245584997"">224-558-4997</a>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
+
+      {/* Shot List */}
+      <section style={{ marginTop: "1.75rem" }}>
+        <h2 style={{ margin: "0 0 0.75rem", fontSize: "1.25rem" }}>Shot List</h2>
+
+        {groups.map((group) => {
+          // Determine if this group has any visible shots in current mode
+          const groupHasVisible = group.sections.some((sec) => sec.shots.some((shot) => isVisible(shot)));
+          if (!groupHasVisible) return null;
+
+          return (
+            <div key={group.title} style={{ marginBottom: "1.25rem", borderRadius: 18, border: "1px solid rgba(0,0,0,0.12)", overflow: "hidden" }}>
+              <div style={{ padding: "0.9rem 1rem", background: "rgba(0,0,0,0.04)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <strong style={{ letterSpacing: 0.5 }}>{group.title}</strong>
+                <span style={{ fontSize: "0.9rem", opacity: 0.75 }}>
+                  {
+                    group.sections
+                      .flatMap((s) => s.shots)
+                      .filter((shot) => !doneMap[shot.id]).length
+                  }{" "}
+                  remaining
+                </span>
+              </div>
+
+              <div style={{ padding: "1rem" }}>
+                {group.sections.map((sec) => {
+                  const visibleShots = sec.shots.filter((shot) => isVisible(shot));
+                  if (visibleShots.length === 0) return null;
+
+                  return (
+                    <div key={sec.title} style={{ marginBottom: "1rem" }}>
+                      <h3 style={{ margin: "0 0 0.5rem", fontSize: "1.05rem" }}>{sec.title}</h3>
+
+                      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "0.5rem" }}>
+                        {visibleShots.map((shot) => {
+                          const checked = !!doneMap[shot.id];
+
+                          return (
+                            <li
+                              key={shot.id}
+                              style={{
+                                display: "flex",
+                                gap: "0.75rem",
+                                alignItems: "flex-start",
+                                padding: "0.75rem 0.75rem",
+                                borderRadius: 14,
+                                border: "1px solid rgba(0,0,0,0.10)",
+                                background: checked ? "rgba(0,0,0,0.03)" : "white",
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => toggleShot(shot.id)}
+                                style={{ marginTop: 4, width: 18, height: 18, cursor: "pointer" }}
+                                aria-label={`Mark complete: ${shot.label}`}
+                              />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 650, textDecoration: checked ? "line-through" : "none", opacity: checked ? 0.7 : 1 }}>
+                                  {shot.label}
+                                </div>
+                                <div style={{ fontSize: "0.85rem", opacity: 0.75, marginTop: 2 }}>
+                                  {shot.location} • {shot.category}
+                                  {shot.subcategory ? ` • ${shot.subcategory}` : ""}
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </section>
+
+      <footer style={{ marginTop: "2rem", opacity: 0.7, fontSize: "0.9rem" }}>
+        Tip: This page saves progress automatically in your browser. Use “Reset” if you need a fresh run.
+      </footer>
     </main>
   );
-}"
+}
