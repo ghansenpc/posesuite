@@ -1,0 +1,409 @@
+"""use client"";
+
+import { useMemo, useState } from ""react"";
+
+export default function WeddingInfoPage() {
+  // Items that should disappear once checked (logistics)
+  const checklistItems = useMemo(
+    () => [
+      { id: ""start-time"", label: ""Confirmed Start Time"", value: ""12:30 PM"" },
+      { id: ""church-name"", label: ""Church"", value: ""Queen of All Saints"" },
+      { id: ""church-address"", label: ""Address"", value: ""6280 N Sauganash Ave, Chicago, IL"" },
+    ],
+    []
+  );
+
+  const [checked, setChecked] = useState(() =>
+    Object.fromEntries(checklistItems.map((i) => [i.id, false]))
+  );
+
+  const handleToggle = (id) => {
+    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const resetChecklist = () => {
+    setChecked(Object.fromEntries(checklistItems.map((i) => [i.id, false])));
+  };
+
+  // Shot list checklist items (church formals) — disappear once checked
+  const shotListItems = useMemo(
+    () => [
+      // 1) Bride Solo
+      { id: ""solo-bride-alone"", group: ""Bride Solo"", label: ""Bride alone"" },
+      { id: ""solo-bride-bouquet"", group: ""Bride Solo"", label: ""Bride with bouquet"" },
+      { id: ""solo-bride-full"", group: ""Bride Solo"", label: ""Bride full length"" },
+      { id: ""solo-bride-close"", group: ""Bride Solo"", label: ""Bride close-up"" },
+
+      // 2) Bride + Groom
+      { id: ""bg-classic"", group: ""Bride + Groom"", label: ""Bride & Groom (classic)"" },
+      { id: ""bg-looking-camera"", group: ""Bride + Groom"", label: ""Bride & Groom looking at camera"" },
+      { id: ""bg-looking-eachother"", group: ""Bride + Groom"", label: ""Bride & Groom looking at each other"" },
+
+      // 3) Bride’s Side — WITH Groom
+      { id: ""bside-with-mom"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Mom"" },
+      { id: ""bside-with-dad"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Dad"" },
+      { id: ""bside-with-parents"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Mom & Dad"" },
+      { id: ""bside-with-brother"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Bride’s Brother"" },
+      {
+        id: ""bside-with-brother-gf"",
+        group: ""Bride’s Side (with Groom)"",
+        label: ""Bride, Groom + Bride’s Brother + Brother’s Girlfriend (optional)"",
+      },
+      {
+        id: ""bside-with-grandma"",
+        group: ""Bride’s Side (with Groom)"",
+        label: ""Bride, Groom + Bride’s Maternal Grandmother"",
+      },
+      { id: ""bside-with-aunt-cathy"", group: ""Bride’s Side (with Groom)"", label: ""Bride, Groom + Aunt Cathy (Godmother)"" },
+      {
+        id: ""bside-with-immediate"",
+        group: ""Bride’s Side (with Groom)"",
+        label: ""Bride, Groom + Bride’s Immediate Family (Mom, Dad, Brother)"",
+      },
+      {
+        id: ""bside-with-extended"",
+        group: ""Bride’s Side (with Groom)"",
+        label:
+          ""Bride, Groom + Bride’s Extended Family (Mom, Dad, Brother, Brother’s GF optional, Maternal Grandma, Aunt Cathy)"",
+      },
+
+      // 4) Bride’s Side — WITHOUT Groom
+      { id: ""bside-no-mom"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Mom"" },
+      { id: ""bside-no-dad"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Dad"" },
+      { id: ""bside-no-parents"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Mom & Dad"" },
+      { id: ""bside-no-brother"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Bride’s Brother"" },
+      {
+        id: ""bside-no-brother-gf"",
+        group: ""Bride’s Side (without Groom)"",
+        label: ""Bride + Bride’s Brother + Brother’s Girlfriend (optional)"",
+      },
+      { id: ""bside-no-grandma"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Maternal Grandmother"" },
+      { id: ""bside-no-aunt-cathy"", group: ""Bride’s Side (without Groom)"", label: ""Bride + Aunt Cathy (Godmother)"" },
+      {
+        id: ""bside-no-immediate"",
+        group: ""Bride’s Side (without Groom)"",
+        label: ""Bride + Bride’s Immediate Family (Mom, Dad, Brother)"",
+      },
+      {
+        id: ""bside-no-extended"",
+        group: ""Bride’s Side (without Groom)"",
+        label:
+          ""Bride + Bride’s Extended Family (Mom, Dad, Brother, Brother’s GF optional, Maternal Grandma, Aunt Cathy)"",
+      },
+
+      // 5) Both Families Together
+      { id: ""both-parents"", group: ""Both Families Together"", label: ""Bride & Groom + Both Sets of Parents"" },
+      {
+        id: ""both-immediate"",
+        group: ""Both Families Together"",
+        label: ""Bride & Groom + Immediate Family (both sides) (Parents + Siblings)"",
+      },
+      { id: ""both-all"", group: ""Both Families Together"", label: ""Bride & Groom + All Family (everyone listed)"" },
+
+      // 6) Groom’s Side — WITH Bride
+      { id: ""gside-with-mom"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Mom"" },
+      { id: ""gside-with-dad"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Dad"" },
+      { id: ""gside-with-parents"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Mom & Dad"" },
+      { id: ""gside-with-brother"", group: ""Groom’s Side (with Bride)"", label: ""Bride, Groom + Groom’s Brother Lucio"" },
+      {
+        id: ""gside-with-godparents"",
+        group: ""Groom’s Side (with Bride)"",
+        label: ""Bride, Groom + Groom’s Godparents (Richard Peaslee)"",
+      },
+      {
+        id: ""gside-with-immediate"",
+        group: ""Groom’s Side (with Bride)"",
+        label: ""Bride, Groom + Groom’s Immediate Family (Mom, Dad, Lucio)"",
+      },
+      {
+        id: ""gside-with-extended"",
+        group: ""Groom’s Side (with Bride)"",
+        label: ""Bride, Groom + Groom’s Extended Family (Mom, Dad, Lucio, Godparents)"",
+      },
+
+      // 7) Groom’s Side — WITHOUT Bride
+      { id: ""gside-no-mom"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Mom"" },
+      { id: ""gside-no-dad"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Dad"" },
+      { id: ""gside-no-parents"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Mom & Dad"" },
+      { id: ""gside-no-brother"", group: ""Groom’s Side (without Bride)"", label: ""Groom + Groom’s Brother Lucio"" },
+      {
+        id: ""gside-no-godparents"",
+        group: ""Groom’s Side (without Bride)"",
+        label: ""Groom + Groom’s Godparents (Richard Peaslee)"",
+      },
+      {
+        id: ""gside-no-immediate"",
+        group: ""Groom’s Side (without Bride)"",
+        label: ""Groom + Groom’s Immediate Family (Mom, Dad, Lucio)"",
+      },
+      {
+        id: ""gside-no-extended"",
+        group: ""Groom’s Side (without Bride)"",
+        label: ""Groom + Groom’s Extended Family (Mom, Dad, Lucio, Godparents)"",
+      },
+
+      // 8) Friends / Special Mentions
+      { id: ""friend-bg-amy"", group: ""Friends / Special"", label: ""Bride & Groom + Amy (Bride’s HS friend)"" },
+      { id: ""friend-bride-amy"", group: ""Friends / Special"", label: ""Bride + Amy"" },
+      { id: ""friend-bg-amy-brother"", group: ""Friends / Special"", label: ""Bride, Groom + Amy + Bride’s Brother (optional)"" },
+    ],
+    []
+  );
+
+  const [shotChecked, setShotChecked] = useState(() =>
+    Object.fromEntries(shotListItems.map((i) => [i.id, false]))
+  );
+
+  const toggleShot = (id) => {
+    setShotChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const resetShotList = () => {
+    setShotChecked(Object.fromEntries(shotListItems.map((i) => [i.id, false])));
+  };
+
+  const shotGroups = useMemo(() => {
+    const groups = {};
+    for (const item of shotListItems) {
+      if (!groups[item.group]) groups[item.group] = [];
+      groups[item.group].push(item);
+    }
+    return groups;
+  }, [shotListItems]);
+
+  return (
+    <main style={{ maxWidth: 820, margin: ""0 auto"", padding: ""3.25rem 1.25rem"", lineHeight: 1.6 }}>
+      <header style={{ marginBottom: ""2rem"" }}>
+        <h1 style={{ margin: 0 }}>Wedding Day Page</h1>
+        <p style={{ margin: ""0.5rem 0 0"", opacity: 0.8 }}>
+          (Standalone reference page — add more details anytime)
+        </p>
+
+        {/* Bold info at the top */}
+        <div
+          style={{
+            marginTop: ""1.5rem"",
+            padding: ""1.25rem"",
+            border: ""1px solid rgba(0,0,0,0.12)"",
+            borderRadius: 12,
+          }}
+        >
+          <div style={{ fontWeight: 800, fontSize: ""1.1rem"" }}>Rosie McHatton + Tom Hamilton</div>
+          <div style={{ fontWeight: 800 }}>Wedding Date: 02/14/2026</div>
+
+          <div style={{ marginTop: ""0.75rem"" }}>
+            <div>
+              <span style={{ fontWeight: 700 }}>Rosie:</span>{"" ""}
+              <a href=""tel:13316432718"">331-643-2718</a>
+            </div>
+            <div>
+              <span style={{ fontWeight: 700 }}>Tom:</span>{"" ""}
+              <a href=""tel:17733185549"">773-318-5549</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Checklist section (items disappear when checked) */}
+      <section
+        style={{
+          padding: ""1.25rem"",
+          border: ""1px solid rgba(0,0,0,0.12)"",
+          borderRadius: 12,
+          marginBottom: ""1.5rem"",
+        }}
+      >
+        <div style={{ display: ""flex"", justifyContent: ""space-between"", gap: ""1rem"", alignItems: ""center"" }}>
+          <h2 style={{ margin: 0 }}>Confirm &amp; Check Off</h2>
+          <button
+            type=""button""
+            onClick={resetChecklist}
+            style={{
+              padding: ""0.5rem 0.75rem"",
+              borderRadius: 10,
+              border: ""1px solid rgba(0,0,0,0.2)"",
+              background: ""transparent"",
+              cursor: ""pointer"",
+              fontWeight: 600,
+            }}
+          >
+            Reset
+          </button>
+        </div>
+
+        <p style={{ marginTop: ""0.5rem"", opacity: 0.8 }}>These items will disappear once checked.</p>
+
+        <div style={{ marginTop: ""0.75rem"", display: ""grid"", gap: ""0.75rem"" }}>
+          {checklistItems
+            .filter((item) => !checked[item.id])
+            .map((item) => (
+              <label
+                key={item.id}
+                style={{
+                  display: ""flex"",
+                  gap: ""0.75rem"",
+                  alignItems: ""flex-start"",
+                  padding: ""0.75rem"",
+                  borderRadius: 12,
+                  border: ""1px solid rgba(0,0,0,0.10)"",
+                }}
+              >
+                <input
+                  type=""checkbox""
+                  checked={!!checked[item.id]}
+                  onChange={() => handleToggle(item.id)}
+                  style={{ marginTop: 4 }}
+                />
+                <div>
+                  <div style={{ fontWeight: 800 }}>{item.label}</div>
+                  <div style={{ opacity: 0.9 }}>{item.value}</div>
+                </div>
+              </label>
+            ))}
+
+          {checklistItems.every((i) => checked[i.id]) && (
+            <div
+              style={{
+                padding: ""0.75rem"",
+                borderRadius: 12,
+                border: ""1px dashed rgba(0,0,0,0.25)"",
+                opacity: 0.9,
+              }}
+            >
+              ✅ All checklist items completed.
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* NEW: Church Formals Shot List Checklist */}
+      <section
+        style={{
+          padding: ""1.25rem"",
+          border: ""1px solid rgba(0,0,0,0.12)"",
+          borderRadius: 12,
+          marginBottom: ""1.5rem"",
+        }}
+      >
+        <div style={{ display: ""flex"", justifyContent: ""space-between"", gap: ""1rem"", alignItems: ""center"" }}>
+          <h2 style={{ margin: 0 }}>Church Formals Shot List</h2>
+          <button
+            type=""button""
+            onClick={resetShotList}
+            style={{
+              padding: ""0.5rem 0.75rem"",
+              borderRadius: 10,
+              border: ""1px solid rgba(0,0,0,0.2)"",
+              background: ""transparent"",
+              cursor: ""pointer"",
+              fontWeight: 600,
+            }}
+          >
+            Reset
+          </button>
+        </div>
+
+        <p style={{ marginTop: ""0.5rem"", opacity: 0.8 }}>
+          Check items off as you go — completed shots disappear.
+        </p>
+
+        <div style={{ marginTop: ""1rem"", display: ""grid"", gap: ""1.25rem"" }}>
+          {Object.entries(shotGroups).map(([groupName, items]) => {
+            const remaining = items.filter((i) => !shotChecked[i.id]);
+            if (remaining.length === 0) return null;
+
+            return (
+              <div key={groupName}>
+                <h3 style={{ margin: ""0 0 0.5rem"", fontSize: ""1.05rem"" }}>{groupName}</h3>
+                <div style={{ display: ""grid"", gap: ""0.6rem"" }}>
+                  {remaining.map((item) => (
+                    <label
+                      key={item.id}
+                      style={{
+                        display: ""flex"",
+                        gap: ""0.75rem"",
+                        alignItems: ""flex-start"",
+                        padding: ""0.75rem"",
+                        borderRadius: 12,
+                        border: ""1px solid rgba(0,0,0,0.10)"",
+                      }}
+                    >
+                      <input
+                        type=""checkbox""
+                        checked={!!shotChecked[item.id]}
+                        onChange={() => toggleShot(item.id)}
+                        style={{ marginTop: 4 }}
+                      />
+                      <div style={{ fontWeight: 700 }}>{item.label}</div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          {shotListItems.every((i) => shotChecked[i.id]) && (
+            <div
+              style={{
+                padding: ""0.75rem"",
+                borderRadius: 12,
+                border: ""1px dashed rgba(0,0,0,0.25)"",
+                opacity: 0.9,
+              }}
+            >
+              ✅ All church formal shots completed.
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Location section */}
+      <section
+        style={{
+          padding: ""1.25rem"",
+          border: ""1px solid rgba(0,0,0,0.12)"",
+          borderRadius: 12,
+          marginBottom: ""1.5rem"",
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Ceremony Location</h2>
+        <div style={{ fontWeight: 800 }}>Queen of All Saints</div>
+        <div>6280 N Sauganash Ave, Chicago, IL</div>
+      </section>
+
+      {/* Contacts */}
+      <section
+        style={{
+          padding: ""1.25rem"",
+          border: ""1px solid rgba(0,0,0,0.12)"",
+          borderRadius: 12,
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Contacts</h2>
+
+        <div style={{ display: ""grid"", gap: ""0.75rem"" }}>
+          <div>
+            <div style={{ fontWeight: 800 }}>Day-Of Contact: Steph</div>
+            <div>
+              <a href=""tel:18475333382"">847-533-3382</a>
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 800 }}>Videographer: Jose</div>
+            <div>
+              <a href=""tel:18153541076"">815-354-1076</a>
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 800 }}>P2: Vitaliia</div>
+            <div>
+              <a href=""tel:12245584997"">224-558-4997</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}"
