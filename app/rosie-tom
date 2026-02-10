@@ -1,8 +1,0 @@
-export default function RosieAndTomPage() {
-  return (
-    <main style={{ padding: "4rem" }}>
-      <h1>Rosie and Tom</h1>
-      <p>This is a standalone page.</p>
-    </main>
-  );
-}
