@@ -1,5 +1,160 @@
+"use client";
 
+// Pose Suite — Save the Date
+// The form sends wedding-date inquiries to gina@posesuite.com through FormSubmit.
+// It does not automatically confirm whether the date is available.
 
+export default function SaveTheDatePage() {
+  return (
+    <main className="ps-page">
+      <div className="ps-content">
+        <header className="ps-header">
+          <p className="ps-brand">POSE SUITE</p>
+          <p className="ps-tagline">A LUXURY PORTRAIT EXPERIENCE</p>
+          <div className="ps-divider" aria-hidden="true" />
+        </header>
+
+        <section className="ps-intro" aria-labelledby="ps-title">
+          <h1 id="ps-title">
+            <span>Check Your</span>
+            <span>Wedding Date</span>
+          </h1>
+          <p>
+            Let&apos;s see if your date is available
+            <span className="ps-mobile-break"> </span>
+            for the Pose Suite experience.
+          </p>
+        </section>
+
+        <form
+          className="ps-form"
+          action="https://formsubmit.co/gina@posesuite.com"
+          method="POST"
+        >
+          <input type="hidden" name="_subject" value="Pose Suite | New Wedding Date Inquiry" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_url" value="https://posesuite.com/savethedate" />
+          <input type="text" name="_honey" className="ps-honeypot" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+
+          <div className="ps-field">
+            <label htmlFor="ps-name">YOUR NAME *</label>
+            <input
+              id="ps-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder="First and last name"
+              required
+            />
+          </div>
+
+          <div className="ps-field">
+            <label htmlFor="ps-email">EMAIL ADDRESS *</label>
+            <input
+              id="ps-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div className="ps-field">
+            <label htmlFor="ps-date">WEDDING DATE *</label>
+            <input id="ps-date" name="wedding_date" type="date" required />
+          </div>
+
+          <div className="ps-field">
+            <label htmlFor="ps-venue">WEDDING VENUE *</label>
+            <input
+              id="ps-venue"
+              name="wedding_venue"
+              type="text"
+              placeholder="Venue name and location (city, state)"
+              required
+            />
+          </div>
+
+          <div className="ps-field">
+            <label htmlFor="ps-guests">APPROXIMATE GUEST COUNT *</label>
+            <select id="ps-guests" name="guest_count" defaultValue="" required>
+              <option value="" disabled>Select a guest count</option>
+              <option value="Under 75">Under 75</option>
+              <option value="75-125">75–125</option>
+              <option value="126-200">126–200</option>
+              <option value="201-300">201–300</option>
+              <option value="Over 300">Over 300</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+          </div>
+
+          <div className="ps-field">
+            <label htmlFor="ps-notes">TELL US A LITTLE MORE (OPTIONAL)</label>
+            <textarea
+              id="ps-notes"
+              name="notes"
+              rows={3}
+              placeholder="Share any details about your vision, timeline, or questions."
+            />
+          </div>
+
+          <button className="ps-button" type="submit">CHECK MY DATE</button>
+        </form>
+
+        <footer className="ps-footer">
+          <p>
+            We&apos;ll personally review your details and be in touch soon
+            <span>with availability and next steps.</span>
+          </p>
+          <div className="ps-divider" aria-hidden="true" />
+          <small>
+            This form requests availability; your wedding date is not reserved
+            until confirmed by Pose Suite.
+          </small>
+        </footer>
+      </div>
+
+      <style jsx>{`
+        .ps-page {
+          min-height: 100vh;
+          padding: 46px 20px 60px;
+          color: #eee6d8;
+          background:
+            radial-gradient(ellipse at 50% 42%, rgba(87, 92, 64, 0.16), transparent 65%),
+            #1d2117;
+          font-family: Arial, Helvetica, sans-serif;
+          box-sizing: border-box;
+        }
+        .ps-page * { box-sizing: border-box; }
+        .ps-content { width: 100%; max-width: 768px; margin: 0 auto; }
+        .ps-header, .ps-intro, .ps-footer { text-align: center; }
+        .ps-brand {
+          margin: 0;
+          font-family: Didot, 'Bodoni MT', 'Times New Roman', serif;
+          font-size: clamp(37px, 8vw, 69px);
+          font-weight: 400;
+          line-height: 1.1;
+          letter-spacing: 0.16em;
+        }
+        .ps-tagline {
+          margin: 18px 0 0;
+          font-size: 11px;
+          letter-spacing: 0.42em;
+          line-height: 1.8;
+        }
+        .ps-divider { width: 104px; height: 1px; background: #c9bba3; margin: 36px auto; }
+        .ps-intro h1 {
+          margin: 0;
+          font-family: Didot, 'Bodoni MT', 'Times New Roman', serif;
+          font-style: italic;
+          font-weight: 400;
+          font-size: clamp(50px, 9vw, 91px);
+          line-height: 0.99;
+          letter-spacing: -0.035em;
+        }
+        .ps-intro h1 span { display: block; }
+        .ps-intro p {
           margin: 36px auto 38px;
           max-width: 590px;
           font-size: 12px;
