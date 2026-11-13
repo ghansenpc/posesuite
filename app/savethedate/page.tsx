@@ -1,244 +1,8 @@
-"use client";
 
-import { FormEvent, useState } from "react";
 
-// IMPORTANT: Change this if your Pose Suite inbox is different.
-const INQUIRY_EMAIL = "gina@posesuite.com";
 
-type FormStatus = "idle" | "sending" | "success" | "error";
-
-export default function SaveTheDatePage() {
-  const [status, setStatus] = useState<FormStatus>("idle");
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setStatus("sending");
-
-    const form = event.currentTarget;
-    const fields = new FormData(form);
-
-    // A hidden field helps filter automated spam submissions.
-    if (String(fields.get("website") || "").trim()) {
-      setStatus("success");
-      return;
-    }
-
-    const payload = {
-      name: String(fields.get("name") || ""),
-      email: String(fields.get("email") || ""),
-      wedding_date: String(fields.get("wedding_date") || ""),
-      wedding_venue: String(fields.get("wedding_venue") || ""),
-      guest_count: String(fields.get("guest_count") || ""),
-      notes: String(fields.get("notes") || ""),
-      _subject: "Pose Suite | New Wedding Date Inquiry",
-      _template: "table",
-      _captcha: "false",
-    };
-
-    try {
-      const response = await fetch(
-        `https://formsubmit.co/ajax/${INQUIRY_EMAIL}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const result = await response.json();
-      if (
-        !response.ok ||
-        (result.success !== true && result.success !== "true")
-      ) {
-        throw new Error("Unable to send inquiry");
-      }
-
-      form.reset();
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
-  }
-
-  return (
-    <main className="ps-page">
-      <div className="ps-content">
-        <header className="ps-header">
-          <p className="ps-brand">POSE SUITE</p>
-          <p className="ps-tagline">A LUXURY PORTRAIT EXPERIENCE</p>
-          <div className="ps-divider" aria-hidden="true" />
-        </header>
-
-        <section className="ps-intro" aria-labelledby="ps-title">
-          <h1 id="ps-title">
-            <span>Check Your</span>
-            <span>Wedding Date</span>
-          </h1>
-          <p>
-            Let&apos;s see if your date is available
-            <span className="ps-mobile-break"> </span>
-            for the Pose Suite experience.
-          </p>
-        </section>
-
-        {status === "success" ? (
-          <section className="ps-form ps-success" role="status">
-            <p className="ps-success-label">THANK YOU FOR INQUIRING</p>
-            <h2>Your story starts here.</h2>
-            <p>
-              Your wedding date inquiry has been sent. We&apos;ll review your
-              event details and be in touch with availability and next steps.
-            </p>
-            <button
-              type="button"
-              className="ps-button"
-              onClick={() => setStatus("idle")}
-            >
-              SEND ANOTHER INQUIRY
-            </button>
-          </section>
-        ) : (
-          <form className="ps-form" onSubmit={handleSubmit}>
-            <div className="ps-field">
-              <label htmlFor="ps-name">YOUR NAME *</label>
-              <input
-                id="ps-name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                placeholder="First and last name"
-                required
-              />
-            </div>
-
-            <div className="ps-field">
-              <label htmlFor="ps-email">EMAIL ADDRESS *</label>
-              <input
-                id="ps-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            <div className="ps-field">
-              <label htmlFor="ps-date">WEDDING DATE *</label>
-              <input
-                id="ps-date"
-                name="wedding_date"
-                type="date"
-                required
-              />
-            </div>
-
-            <div className="ps-field">
-              <label htmlFor="ps-venue">WEDDING VENUE *</label>
-              <input
-                id="ps-venue"
-                name="wedding_venue"
-                type="text"
-                placeholder="Venue name and location (city, state)"
-                required
-              />
-            </div>
-
-            <div className="ps-field">
-              <label htmlFor="ps-guests">APPROXIMATE GUEST COUNT *</label>
-              <select id="ps-guests" name="guest_count" defaultValue="" required>
-                <option value="" disabled>
-                  Select a guest count
-                </option>
-                <option value="Under 75">Under 75</option>
-                <option value="75–125">75–125</option>
-                <option value="126–200">126–200</option>
-                <option value="201–300">201–300</option>
-                <option value="Over 300">Over 300</option>
-                <option value="Not sure yet">Not sure yet</option>
-              </select>
-            </div>
-
-            <div className="ps-field">
-              <label htmlFor="ps-notes">TELL US A LITTLE MORE (OPTIONAL)</label>
-              <textarea
-                id="ps-notes"
-                name="notes"
-                rows={3}
-                placeholder="Share any details about your vision, timeline, or questions."
-              />
-            </div>
-
-            <div className="ps-honeypot" aria-hidden="true">
-              <label htmlFor="ps-website">Leave this field blank</label>
-              <input id="ps-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
-            </div>
-
-            {status === "error" && (
-              <p className="ps-error" role="alert">
-                Your request couldn&apos;t be sent. Please try again in a moment.
-              </p>
-            )}
-
-            <button className="ps-button" type="submit" disabled={status === "sending"}>
-              {status === "sending" ? "SENDING..." : "CHECK MY DATE"}
-            </button>
-          </form>
-        )}
-
-        <footer className="ps-footer">
-          <p>
-            We&apos;ll personally review your details and be in touch soon
-            <span>with availability and next steps.</span>
-          </p>
-          <div className="ps-divider" aria-hidden="true" />
-          <small>Wedding dates are not reserved until confirmed by Pose Suite.</small>
-        </footer>
-      </div>
-
-      <style jsx>{`
-        .ps-page {
-          min-height: 100vh;
-          padding: 46px 20px 60px;
-          color: #eee6d8;
-          background:
-            radial-gradient(ellipse at 50% 42%, rgba(87, 92, 64, 0.16), transparent 65%),
-            #1d2117;
-          font-family: Arial, Helvetica, sans-serif;
-          box-sizing: border-box;
-        }
-        .ps-page * { box-sizing: border-box; }
-        .ps-content { width: 100%; max-width: 768px; margin: 0 auto; }
-        .ps-header, .ps-intro, .ps-footer { text-align: center; }
-        .ps-brand {
-          margin: 0;
-          font-family: Didot, 'Bodoni MT', 'Times New Roman', serif;
-          font-size: clamp(37px, 8vw, 69px);
-          font-weight: 400;
-          line-height: 1.1;
-          letter-spacing: 0.16em;
-        }
-        .ps-tagline {
-          margin: 18px 0 0;
-          font-size: 11px;
-          letter-spacing: 0.42em;
-          line-height: 1.8;
-        }
-        .ps-divider { width: 104px; height: 1px; background: #c9bba3; margin: 36px auto; }
-        .ps-intro h1 {
-          margin: 0;
-          font-family: Didot, 'Bodoni MT', 'Times New Roman', serif;
-          font-style: italic;
-          font-weight: 400;
-          font-size: clamp(50px, 9vw, 91px);
-          line-height: 0.99;
-          letter-spacing: -0.035em;
-        }
-        .ps-intro h1 span { display: block; }
-        .ps-intro p {
+    
+  
           margin: 36px auto 38px;
           max-width: 590px;
           font-size: 12px;
@@ -269,6 +33,7 @@ export default function SaveTheDatePage() {
           padding: 13px 15px;
           color: #f2e9dc;
           background: rgba(10, 12, 8, 0.13);
+          -webkit-text-fill-color: #f2e9dc;
           font-family: Georgia, 'Times New Roman', serif;
           font-size: 17px;
           font-style: italic;
@@ -281,6 +46,14 @@ export default function SaveTheDatePage() {
         .ps-field select:focus,
         .ps-field textarea:focus { outline: 1px solid #eee6d8; }
         .ps-field input[type='date'] { min-height: 52px; color-scheme: dark; }
+        .ps-field input:-webkit-autofill,
+        .ps-field input:-webkit-autofill:hover,
+        .ps-field input:-webkit-autofill:focus {
+          -webkit-box-shadow: 0 0 0 1000px #25291f inset;
+          -webkit-text-fill-color: #f2e9dc;
+          caret-color: #f2e9dc;
+          transition: background-color 9999s ease-out;
+        }
         .ps-field select { appearance: auto; min-height: 52px; }
         .ps-field select option { background: #1d2117; color: #eee6d8; }
         .ps-field textarea { resize: vertical; min-height: 98px; }
