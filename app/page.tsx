@@ -257,7 +257,7 @@ export default function HomePage() {
                   backdropFilter: "blur(2px)",
                 }}
               >
-                Check Your Date &nbsp; →
+                Save The Date &nbsp; →
               </Link>
 
               <Link
