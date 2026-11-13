@@ -1,297 +1,284 @@
-export default function Home() {
+import Image from "next/image";
+import Link from "next/link";
+
+export default function HomePage() {
   return (
     <main
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom, #F8F7F4, #ECF0E8)",
-        color: "#2E2E2E",
+        backgroundColor: "#f7f4ee",
+        color: "#1f1b16",
         fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+          'Baskerville, "Times New Roman", Times, serif',
       }}
     >
-      {/* HERO */}
-      <section
+      <header
         style={{
-          padding: "6rem 1.5rem 4rem",
-          textAlign: "center",
-          maxWidth: "960px",
-          margin: "0 auto",
-        }}
-      >
-        {/* top pill bar */}
-        <div
-          style={{
-            display: "inline-block",
-            padding: "0.35rem 0.85rem",
-            borderRadius: "999px",
-            border: "1px solid #C9A66B",
-            fontSize: "0.75rem",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "#7A6A45",
-            marginBottom: "1.5rem",
-          }}
-        >
-          POSE SUITE · GARBERO PHOTOGRAPHY
-        </div>
-
-        <h1
-          style={{
-            fontFamily: '"Georgia", "Times New Roman", serif',
-            fontWeight: 300,
-            fontSize: "2.7rem",
-            lineHeight: 1.1,
-            marginBottom: "1.25rem",
-          }}
-        >
-          Plan, organize, and schedule your wedding so we can execute it beautifully.
-        </h1>
-
-        <p
-          style={{
-            maxWidth: "34rem",
-            margin: "0 auto 2.5rem",
-            fontSize: "1.05rem",
-            color: "#555",
-          }}
-        >
-          PoseSuite connects your vision with my team&apos;s expertise to build
-          family formals, timelines, and inspiration boards — all in one
-          elegant workflow.
-        </p>
-
-        <a
-          href="/basics"
-          style={{
-            backgroundColor: "#A3B18A",
-            color: "#1F2622",
-            border: "none",
-            padding: "0.9rem 2.8rem",
-            borderRadius: "999px",
-            fontSize: "1rem",
-            letterSpacing: "0.05em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            fontWeight: 500,
-            boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
-            textDecoration: "none",
-            display: "inline-block",
-          }}
-        >
-          Get Started
-        </a>
-
-        <p
-          style={{
-            marginTop: "0.75rem",
-            fontSize: "0.85rem",
-            color: "#777",
-          }}
-        >
-          Built for couples who value simplicity in planning timeless imagery.
-        </p>
-      </section>
-
-      {/* HOW IT WORKS / TAGLINE */}
-      <section
-        style={{
-          padding: "3rem 1.5rem 4rem",
-          maxWidth: "1040px",
-          margin: "0 auto",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "1.6rem",
-            fontFamily: '"Georgia", "Times New Roman", serif',
-            fontWeight: 400,
-            marginBottom: "2.5rem",
-          }}
-        >
-          An organized home for your wedding photography vision board.
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "1.75rem",
-          }}
-        >
-          {[
-            {
-              title: "Plan",
-              text: "Collect must-have images, family details, and inspiration uploads in one place.",
-            },
-            {
-              title: "Organize",
-              text: "Build smart family shot lists, note special considerations, and photographer-only reminders.",
-            },
-            {
-              title: "Schedule",
-              text: "Design a photography-first timeline so your photo team knows where to be and who should be in front of our lens.",
-            },
-            {
-              title: "Execute",
-              text: "Shareable day-of checklists for my phone – I can tap to mark shots complete so I can focus on creating, not remembering.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              style={{
-                backgroundColor: "#FFFFFF",
-                borderRadius: "1.25rem",
-                padding: "1.75rem 1.6rem",
-                border: "1px solid #E4E4E0",
-                boxShadow: "0 14px 35px rgba(0,0,0,0.03)",
-              }}
-            >
-              <div
-                style={{
-                  width: "38px",
-                  height: "38px",
-                  borderRadius: "50%",
-                  background:
-                    "radial-gradient(circle at 30% 20%, #C9A66B, #A37A36)",
-                  marginBottom: "0.9rem",
-                }}
-              />
-              <h3
-                style={{
-                  fontSize: "1.1rem",
-                  marginBottom: "0.45rem",
-                  fontWeight: 600,
-                }}
-              >
-                {item.title}
-              </h3>
-              <p style={{ fontSize: "0.95rem", color: "#555" }}>
-                {item.text}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FEATURE HIGHLIGHTS */}
-      <section
-        style={{
-          padding: "3.5rem 1.5rem 4rem",
-          backgroundColor: "#F2F3ED",
-          borderTop: "1px solid #E0E2D7",
-          borderBottom: "1px solid #E0E2D7",
+          width: "100%",
+          borderBottom: "1px solid rgba(31, 27, 22, 0.08)",
+          backgroundColor: "#f7f4ee",
         }}
       >
         <div
           style={{
-            maxWidth: "1040px",
+            maxWidth: "1280px",
             margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
-            gap: "2.5rem",
+            padding: "28px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "24px",
+            flexWrap: "wrap",
           }}
         >
-          <div>
-            <h2
+          <Link href="/" style={{ display: "inline-block" }}>
+            <Image
+              src="/HOMEPAGE-LOGO.png"
+              alt="Pose Suite"
+              width={520}
+              height={170}
+              priority
               style={{
-                fontFamily: '"Georgia", "Times New Roman", serif',
-                fontSize: "1.6rem",
-                fontWeight: 400,
-                marginBottom: "1rem",
+                width: "min(520px, 100%)",
+                height: "auto",
               }}
-            >
-              Built so your wedding day feels calm, intentional, and fully seen.
-            </h2>
-            <p
-              style={{
-                fontSize: "0.98rem",
-                color: "#555",
-                marginBottom: "1.5rem",
-              }}
-            >
-              PoseSuite is your private planning room for Garbero Photography:
-              a dedicated hub for your family formals, timeline, special
-              considerations, and inspiration images we&apos;ll bring to life on
-              the day.
-            </p>
+            />
+          </Link>
+
+          <nav aria-label="Main navigation">
             <ul
               style={{
                 listStyle: "none",
-                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: "34px",
                 margin: 0,
-                fontSize: "0.95rem",
-                color: "#444",
+                padding: 0,
+                letterSpacing: "0.18em",
+                fontSize: "0.9rem",
+                textTransform: "uppercase",
               }}
             >
-              <li style={{ marginBottom: "0.65rem" }}>
-                ✅ Guided family shot builder with space for names and dynamics
+              <li>
+                <Link
+                  href="/"
+                  style={{ color: "#1f1b16", textDecoration: "none" }}
+                >
+                  Home
+                </Link>
               </li>
-              <li style={{ marginBottom: "0.65rem" }}>
-                ✅ Timeline notes so we know where to be, and when
+              <li>
+                <Link
+                  href="/yourinvestment"
+                  style={{ color: "#1f1b16", textDecoration: "none" }}
+                >
+                  The Investment
+                </Link>
               </li>
-              <li style={{ marginBottom: "0.65rem" }}>
-                ✅ Upload your must-have inspiration images and traditions
+              <li>
+                <Link
+                  href="/savethedate"
+                  style={{ color: "#1f1b16", textDecoration: "none" }}
+                >
+                  Inquire
+                </Link>
               </li>
-              <li>✅ Day-of reference so we can focus on you, not the checklist</li>
             </ul>
-          </div>
+          </nav>
+        </div>
+      </header>
+
+      <section
+        style={{
+          maxWidth: "1280px",
+          margin: "0 auto",
+          padding: "28px 24px 64px",
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            minHeight: "calc(100vh - 180px)",
+            borderRadius: "0px",
+            overflow: "hidden",
+            backgroundImage: "url('/homepage-background.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(20,18,15,0.12) 0%, rgba(20,18,15,0.18) 30%, rgba(20,18,15,0.28) 100%)",
+            }}
+          />
 
           <div
             style={{
-              alignSelf: "center",
-              borderRadius: "1.5rem",
-              border: "1px solid #E0E2D7",
-              padding: "1.75rem 1.5rem",
-              backgroundColor: "#FFFFFF",
-              boxShadow: "0 18px 40px rgba(0,0,0,0.05)",
+              position: "relative",
+              zIndex: 1,
+              textAlign: "center",
+              color: "#f7f4ee",
+              width: "100%",
+              maxWidth: "900px",
+              padding: "clamp(70px, 10vw, 120px) 24px 120px",
             }}
           >
-            <h3
+            <div
               style={{
-                fontSize: "1.05rem",
-                fontWeight: 600,
-                marginBottom: "0.75rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "20px",
+                marginBottom: "26px",
               }}
             >
-              Working with Garbero Photography
-            </h3>
-            <p
+              <span
+                style={{
+                  display: "block",
+                  width: "76px",
+                  height: "1px",
+                  backgroundColor: "rgba(247, 244, 238, 0.85)",
+                }}
+              />
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.28em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Chicagoland &amp; Beyond
+              </p>
+              <span
+                style={{
+                  display: "block",
+                  width: "76px",
+                  height: "1px",
+                  backgroundColor: "rgba(247, 244, 238, 0.85)",
+                }}
+              />
+            </div>
+
+            <h1
               style={{
-                fontSize: "0.95rem",
-                color: "#555",
-                marginBottom: "1.2rem",
+                margin: 0,
+                fontWeight: 400,
+                lineHeight: 0.92,
+                fontSize: "clamp(4.2rem, 10vw, 8.5rem)",
+                letterSpacing: "-0.04em",
               }}
             >
-              From your first consultation to your final gallery delivery, my
-              team and I use PoseSuite behind the scenes to keep everything
-              organized, thoughtful, and tailored to your story.
-            </p>
+              Pose Suite
+            </h1>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "20px",
+                marginTop: "22px",
+                marginBottom: "42px",
+              }}
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: "60px",
+                  height: "1px",
+                  backgroundColor: "rgba(247, 244, 238, 0.72)",
+                }}
+              />
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                }}
+              >
+                A Guided Photo Booth Experience
+              </p>
+              <span
+                style={{
+                  display: "block",
+                  width: "60px",
+                  height: "1px",
+                  backgroundColor: "rgba(247, 244, 238, 0.72)",
+                }}
+              />
+            </div>
+
             <p
               style={{
-                fontSize: "0.9rem",
-                color: "#777",
+                margin: "0 auto",
+                maxWidth: "700px",
+                fontSize: "clamp(1.8rem, 4vw, 3.3rem)",
+                lineHeight: 1.2,
                 fontStyle: "italic",
+                fontWeight: 400,
               }}
             >
-              You bring the love and the vision. We&apos;ll bring the calm, the
-              direction, and the artistry to photograph it all.
+              Guided editorial portraits for weddings &amp; celebrations.
             </p>
+
+            <div
+              style={{
+                marginTop: "50px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "18px",
+              }}
+            >
+              <Link
+                href="/savethedate"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "340px",
+                  maxWidth: "100%",
+                  padding: "18px 28px",
+                  color: "#f7f4ee",
+                  textDecoration: "none",
+                  border: "1px solid rgba(247, 244, 238, 0.88)",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  fontSize: "0.98rem",
+                  backgroundColor: "rgba(247, 244, 238, 0.04)",
+                  backdropFilter: "blur(2px)",
+                }}
+              >
+                Check Your Date &nbsp; →
+              </Link>
+
+              <Link
+                href="/yourinvestment"
+                style={{
+                  color: "#f7f4ee",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  borderBottom: "1px solid rgba(247, 244, 238, 0.65)",
+                  paddingBottom: "4px",
+                }}
+              >
+                View The Investment
+              </Link>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer
-        style={{
-          textAlign: "center",
-          padding: "1.5rem 1rem 2rem",
-          fontSize: "0.8rem",
-          color: "#777",
-        }}
-      >
-        © {new Date().getFullYear()} Garbero Photography · PoseSuite
-      </footer>
     </main>
   );
 }
+
