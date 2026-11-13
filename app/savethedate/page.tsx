@@ -1,8 +1,5 @@
 
 
-
-    
-  
           margin: 36px auto 38px;
           max-width: 590px;
           font-size: 12px;
