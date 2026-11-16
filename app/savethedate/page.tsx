@@ -92,12 +92,12 @@ export default function SaveTheDatePage() {
           <div className="ps-field">
             <label htmlFor="ps-notes">TELL US A LITTLE MORE (OPTIONAL)</label>
             <textarea
-              id="ps-notes"
-              name="notes"
-              rows={3}
-              placeholder="Share any details about your vision, timeline, or questions."
-            />
-          </div>
+  id="ps-notes"
+  name="notes"
+  rows={3}
+  defaultValue="POSE SUITE TEST - Full notes field 12345. Testing editorial wedding portraits with the green chair."
+  placeholder="Share any details about your vision, timeline, or questions."
+/>
 
           <button className="ps-button" type="submit">CHECK MY DATE</button>
         </form>
